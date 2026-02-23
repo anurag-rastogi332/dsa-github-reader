@@ -544,7 +544,7 @@
 
       window.refreshFromGitHub = async function() {
         window.clearGHCachedData();
-        location.reload(); // Refresh to trigger preload again
+        location.reload(); 
       };
 
       // --- PROGRESS UTILS ---
@@ -669,7 +669,6 @@
           overlay.style.display = 'flex';
 
           try {
-              // 1. Fetch Topics
               status.textContent = "Fetching topic folders...";
               const rootUrl = `https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`;
               const rootRes = await fetch(rootUrl);
@@ -679,7 +678,6 @@
               setCache('topics', topics);
               allTopics = topics;
 
-              // 2. Discover all files
               status.textContent = "Discovering problem files...";
               let allFilePaths = [];
               for (const topic of topics) {
@@ -690,7 +688,6 @@
                   cpps.forEach(f => allFilePaths.push(f.path));
               }
 
-              // 3. Download Code for every file
               const total = allFilePaths.length;
               for (let i = 0; i < total; i++) {
                   const path = allFilePaths[i];
@@ -701,7 +698,6 @@
                   progressBar.style.width = pct + '%';
                   countDisplay.textContent = `${i + 1} / ${total}`;
 
-                  // Fetch raw code
                   const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/');
                   const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${encodedPath}`;
                   const codeRes = await fetch(rawUrl);
@@ -723,7 +719,7 @@
           }
       }
 
-      // --- DATA FETCHING (WITH CACHING) ---
+      // --- DATA FETCHING ---
       async function fetchTopics() {
         const isDone = localStorage.getItem(PRELOAD_FLAG);
         const cached = getCache('topics');
@@ -840,8 +836,9 @@
         const hasGrammar = typeof Prism !== 'undefined' && Prism.languages.cpp;
 
         lines.forEach((line, idx) => {
-          const escaped = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          const highlighted = hasGrammar ? Prism.highlight(escaped, Prism.languages.cpp, 'cpp') : escaped;
+          // Prism handles escaping of special characters within its output.
+          // We must pass the RAW line to Prism for proper syntax detection.
+          const highlighted = hasGrammar ? Prism.highlight(line, Prism.languages.cpp, 'cpp') : line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
           html += `
             <div class="code-line">
               <span class="line-number-gutter">${idx + 1}</span>
@@ -858,7 +855,6 @@
       function updateAllUI() {
         const fileItems = document.querySelectorAll('.file-item');
         
-        // If items are preloaded but not in DOM sidebar yet, we calculate from cache
         let totalCount = 0;
         const topics = {};
         allTopics.forEach(t => {
