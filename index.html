@@ -366,6 +366,42 @@
     }
     #toast.show { transform: translateY(0); }
 
+    /* Preload Overlay */
+    #preloadOverlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        color: white;
+    }
+    .preload-box {
+        background: var(--bg-sidebar);
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        width: 400px;
+        text-align: center;
+    }
+    .preload-progress-outer {
+        width: 100%;
+        height: 8px;
+        background: var(--bg-primary);
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+    .preload-progress-inner {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.1s;
+    }
+
     .footer {
       padding: 4px 1rem;
       font-size: 0.65rem;
@@ -379,6 +415,18 @@
 </head>
 <body>
   <div id="toast">Message</div>
+
+  <!-- Preload UI -->
+  <div id="preloadOverlay">
+      <div class="preload-box">
+          <h3 style="margin-bottom:10px;">Syncing Repository</h3>
+          <p id="preloadStatus" style="font-size:0.85rem; color:var(--text-muted);">Initializing setup...</p>
+          <div class="preload-progress-outer">
+              <div id="preloadProgress" class="preload-progress-inner"></div>
+          </div>
+          <p id="preloadFileCount" style="font-size:0.75rem; font-family:'Fira Code';">0 / 0</p>
+      </div>
+  </div>
 
   <div class="sidebar">
     <div class="sidebar-header">
@@ -460,7 +508,8 @@
       const USERNAME = "anurag-rastogi332";
       const REPO = "Dsa-Questions";
       const BRANCH = "main";
-      const CACHE_PREFIX = "dsa_gh_cache_"; // Prefix for API cache
+      const CACHE_PREFIX = "dsa_gh_cache_";
+      const PRELOAD_FLAG = "dsa_preload_done";
 
       let allTopics = [];
       let currentFilePath = "";
@@ -489,16 +538,13 @@
             count++;
           }
         });
-        showToast(`Cleared ${count} cached GitHub items.`);
+        localStorage.removeItem(PRELOAD_FLAG);
+        showToast(`Cleared ${count} cached items.`);
       };
 
       window.refreshFromGitHub = async function() {
         window.clearGHCachedData();
-        showToast("Re-fetching fresh data...");
-        await fetchTopics(true);
-        if (currentFilePath) {
-          await loadCode(currentFilePath, true);
-        }
+        location.reload(); // Refresh to trigger preload again
       };
 
       // --- PROGRESS UTILS ---
@@ -547,8 +593,10 @@
       window.setTheme = function(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('dsa_theme', theme);
-        document.getElementById('themeDark').classList.toggle('active', theme === 'dark');
-        document.getElementById('themeLight').classList.toggle('active', theme === 'light');
+        const darkBtn = document.getElementById('themeDark');
+        const lightBtn = document.getElementById('themeLight');
+        if(darkBtn) darkBtn.classList.toggle('active', theme === 'dark');
+        if(lightBtn) lightBtn.classList.toggle('active', theme === 'light');
       };
 
       window.showView = function(view) {
@@ -582,9 +630,11 @@
       };
 
       window.copyCode = () => {
-        const lines = Array.from(document.querySelectorAll('#codeBlock .line-code')).map(el => el.innerText).join('\n');
+        const codeLines = Array.from(document.querySelectorAll('#codeBlock .line-code'));
+        if(!codeLines.length) return showToast("No code to copy");
+        const text = codeLines.map(el => el.innerText).join('\n');
         const textArea = document.createElement("textarea");
-        textArea.value = lines;
+        textArea.value = text;
         document.body.appendChild(textArea);
         textArea.select();
         try {
@@ -609,28 +659,82 @@
         }
       };
 
+      // --- PRELOAD LOGIC ---
+      async function startPreload() {
+          const overlay = document.getElementById('preloadOverlay');
+          const status = document.getElementById('preloadStatus');
+          const progressBar = document.getElementById('preloadProgress');
+          const countDisplay = document.getElementById('preloadFileCount');
+
+          overlay.style.display = 'flex';
+
+          try {
+              // 1. Fetch Topics
+              status.textContent = "Fetching topic folders...";
+              const rootUrl = `https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`;
+              const rootRes = await fetch(rootUrl);
+              if (!rootRes.ok) throw new Error("API limit or connection error");
+              const rootData = await rootRes.json();
+              const topics = rootData.filter(d => d.type === 'dir');
+              setCache('topics', topics);
+              allTopics = topics;
+
+              // 2. Discover all files
+              status.textContent = "Discovering problem files...";
+              let allFilePaths = [];
+              for (const topic of topics) {
+                  const topicRes = await fetch(topic.url);
+                  const topicFiles = await topicRes.json();
+                  const cpps = topicFiles.filter(f => f.name.endsWith('.cpp'));
+                  setCache(`files_${topic.name}`, cpps);
+                  cpps.forEach(f => allFilePaths.push(f.path));
+              }
+
+              // 3. Download Code for every file
+              const total = allFilePaths.length;
+              for (let i = 0; i < total; i++) {
+                  const path = allFilePaths[i];
+                  const fileName = path.split('/').pop();
+                  status.textContent = `Caching ${fileName}...`;
+                  
+                  const pct = Math.round(((i + 1) / total) * 100);
+                  progressBar.style.width = pct + '%';
+                  countDisplay.textContent = `${i + 1} / ${total}`;
+
+                  // Fetch raw code
+                  const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+                  const rawUrl = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${encodedPath}`;
+                  const codeRes = await fetch(rawUrl);
+                  if (codeRes.ok) {
+                      const codeText = await codeRes.text();
+                      setCache(`code_${path}`, codeText);
+                  }
+              }
+
+              localStorage.setItem(PRELOAD_FLAG, "true");
+              overlay.style.display = 'none';
+              showToast("Preload complete! App is ready offline.");
+              renderTopics(allTopics);
+              updateAllUI();
+          } catch (err) {
+              console.error(err);
+              status.textContent = "Sync failed. Will try again next load.";
+              setTimeout(() => { overlay.style.display = 'none'; renderTopics(allTopics); }, 3000);
+          }
+      }
+
       // --- DATA FETCHING (WITH CACHING) ---
-      async function fetchTopics(force = false) {
-        if (!force) {
-          const cached = getCache('topics');
-          if (cached) {
-            allTopics = cached;
-            renderTopics(allTopics);
+      async function fetchTopics() {
+        const isDone = localStorage.getItem(PRELOAD_FLAG);
+        const cached = getCache('topics');
+        
+        if (!isDone || !cached) {
+            await startPreload();
             return;
           }
-        }
 
-        try {
-          const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error("API Limit or Repo missing");
-          const data = await res.json();
-          allTopics = data.filter(d => d.type === 'dir');
-          setCache('topics', allTopics);
-          renderTopics(allTopics);
-        } catch (err) {
-          document.getElementById('topicsList').innerHTML = `<div style="padding:10px; color:var(--danger); font-size:0.8rem;">Failed to load repository. Check internet or branch name.</div>`;
-        }
+        allTopics = cached;
+        renderTopics(allTopics);
       }
 
       function renderTopics(topics) {
@@ -662,12 +766,7 @@
         container.style.display = 'block';
 
         const cacheKey = `files_${name}`;
-        let cpps = null;
-
-        if (!force) {
-          const cached = getCache(cacheKey);
-          if (cached) cpps = cached;
-        }
+        let cpps = getCache(cacheKey);
 
         if (!cpps) {
           container.innerHTML = `<div style="padding:4px 8px; font-size:0.7rem; opacity:0.5;">Loading files...</div>`;
@@ -707,7 +806,7 @@
         });
 
         if (cpps.length === 0) container.innerHTML = `<div style="padding:4px 8px; font-size:0.7rem; opacity:0.5;">No .cpp files</div>`;
-        updateAllUI(); // Refresh status icons
+        updateAllUI(); 
       };
 
       window.loadCode = async function(path, force = false) {
@@ -717,12 +816,7 @@
 
         const codeBlock = document.getElementById('codeBlock');
         const cacheKey = `code_${path}`;
-        let text = null;
-
-        if (!force) {
-          const cached = getCache(cacheKey);
-          if (cached) text = cached;
-        }
+        let text = force ? null : getCache(cacheKey);
 
         if (!text) {
           codeBlock.innerHTML = `<div class="code-line"><span class="line-number-gutter">...</span><span class="line-code">// fetching code from GitHub...</span></div>`;
@@ -763,11 +857,25 @@
       // --- DASHBOARD ---
       function updateAllUI() {
         const fileItems = document.querySelectorAll('.file-item');
-        const total = fileItems.length || 0;
+        
+        // If items are preloaded but not in DOM sidebar yet, we calculate from cache
+        let totalCount = 0;
+        const topics = {};
+        allTopics.forEach(t => {
+            const files = getCache(`files_${t.name}`);
+            if(files) {
+                totalCount += files.length;
+                topics[t.name] = { total: files.length, solved: 0 };
+                files.forEach(f => {
+                    if(progress.solved[f.path]) topics[t.name].solved++;
+                });
+            }
+        });
+
         const solvedCount = Object.keys(progress.solved).length;
         const reviseCount = Object.keys(progress.revise).length;
 
-        document.getElementById('dashTotal').textContent = total;
+        document.getElementById('dashTotal').textContent = totalCount;
         document.getElementById('dashSolved').textContent = solvedCount;
         document.getElementById('dashStreak').textContent = progress.streak;
         document.getElementById('dashRevise').textContent = reviseCount;
@@ -785,25 +893,13 @@
         });
 
         if (dashboardChart) {
-          dashboardChart.data.datasets[0].data = [solvedCount, Math.max(0, total - solvedCount)];
+          dashboardChart.data.datasets[0].data = [solvedCount, Math.max(0, totalCount - solvedCount)];
           dashboardChart.update();
         }
 
-        const topics = {};
-        // Use cached topics or current topics to build mapping
-        allTopics.forEach(t => topics[t.name] = { total: 0, solved: 0 });
-        
-        fileItems.forEach(item => {
-            const topicName = item.dataset.path.split('/')[0];
-            if (!topics[topicName]) topics[topicName] = { total: 0, solved: 0 };
-            topics[topicName].total++;
-            if (progress.solved[item.dataset.path]) topics[topicName].solved++;
-        });
-
         let topicHtml = "";
         Object.entries(topics).forEach(([name, data]) => {
-            if (data.total === 0) return; // Only show topics that have files loaded/listed
-            const pct = Math.round((data.solved / data.total) * 100);
+            const pct = data.total > 0 ? Math.round((data.solved / data.total) * 100) : 0;
             topicHtml += `
               <div style="margin-bottom:12px;">
                 <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px;">
@@ -813,7 +909,7 @@
                 <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
               </div>`;
         });
-        document.getElementById('topicProgressListDashboard').innerHTML = topicHtml || '<p style="font-size:0.8rem; color:var(--text-muted);">Expand folders in sidebar to see detailed progress.</p>';
+        document.getElementById('topicProgressListDashboard').innerHTML = topicHtml || '<p style="font-size:0.8rem; color:var(--text-muted);">Syncing repository structure...</p>';
 
         let revisionHtml = "";
         Object.keys(progress.revise).forEach(path => {
@@ -856,7 +952,7 @@
       // --- INITIALIZE ---
       loadProgress();
       setTheme(localStorage.getItem('dsa_theme') || 'dark');
-      fetchTopics(); // This will use cache if available
+      fetchTopics(); 
       initChart();
 
     })();
