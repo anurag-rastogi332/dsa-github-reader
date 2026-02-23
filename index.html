@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DSA Flow · VS Code style (improved code preview)</title>
-  <!-- Fonts & Prism (VS Code dark theme) -->
+  <title>DSA Flow · VS Code style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -17,24 +16,23 @@
       box-sizing: border-box;
     }
 
-    /* === VS Code pure dark theme (default) with clean light override === */
     :root {
-      --bg-sidebar: #252526;        /* VS Code activity bar */
-      --bg-primary: #1e1e1e;        /* editor background */
-      --bg-secondary: #2d2d30;       /* tab bar / sidebar */
+      --bg-sidebar: #252526;
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #2d2d30;
       --border-color: #3e3e42;
       --text-primary: #d4d4d4;
       --text-secondary: #cccccc;
       --text-muted: #9e9e9e;
-      --accent: #007acc;             /* VS Code blue */
+      --accent: #007acc;
       --accent-hover: #1a85ff;
-      --code-bg: #1e1e1e;            /* same as editor */
+      --code-bg: #1e1e1e;
       --header-bg: #2d2d30;
-      --success: #6a9955;            /* green */
-      --warning: #dcdcaa;             /* yellow */
+      --success: #6a9955;
+      --warning: #dcdcaa;
       --danger: #f48771;
       --line-number-color: #6e7681;
-      --line-number-border: #3e3e42;  /* vertical separator */
+      --line-number-border: #3e3e42;
     }
 
     [data-theme="light"] {
@@ -66,13 +64,14 @@
       transition: background-color 0.2s;
     }
 
-    /* ===== SIDEBAR ===== */
+    /* === SIDEBAR === */
     .sidebar {
       width: 300px;
       background: var(--bg-sidebar);
       border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
+      z-index: 10;
     }
 
     .sidebar-header {
@@ -81,20 +80,21 @@
     }
 
     .sidebar-header h2 {
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--text-secondary);
-      letter-spacing: 0.5px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .theme-toggle {
       display: flex;
       gap: 6px;
-      margin: 10px 0 6px;
+      margin: 10px 0;
     }
     .theme-btn {
       flex: 1;
@@ -103,7 +103,7 @@
       border: 1px solid var(--border-color);
       color: var(--text-primary);
       border-radius: 4px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
     }
     .theme-btn.active {
@@ -118,7 +118,7 @@
       border: 1px solid var(--border-color);
       color: var(--text-primary);
       padding: 8px 10px;
-      border-radius: 5px;
+      border-radius: 4px;
       font-size: 0.85rem;
       outline: none;
     }
@@ -126,33 +126,32 @@
     .topics-scroll {
       flex: 1;
       overflow-y: auto;
-      padding: 0.75rem 0.5rem;
+      padding: 0.5rem;
     }
 
     .topic-item {
-      margin-bottom: 4px;
-      border-radius: 4px;
+      margin-bottom: 2px;
     }
 
     .topic-header {
-      padding: 8px 10px;
+      padding: 6px 10px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       color: var(--text-secondary);
       border-radius: 4px;
-      background: var(--bg-secondary);
     }
     .topic-header:hover {
-      background: var(--border-color);
+      background: var(--bg-secondary);
     }
     .topic-header .arrow {
       margin-left: auto;
-      font-size: 0.8rem;
-      transition: transform 0.1s;
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+      opacity: 0.5;
     }
     .topic-header.open .arrow {
       transform: rotate(90deg);
@@ -160,50 +159,49 @@
 
     .files-container {
       display: none;
-      padding-left: 20px;
-      margin-top: 4px;
+      padding-left: 16px;
+      margin-top: 2px;
     }
 
     .file-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 8px 6px 16px;
-      margin: 2px 0;
+      padding: 4px 8px;
+      margin: 1px 0;
       border-radius: 4px;
       font-size: 0.8rem;
       font-family: 'Fira Code', monospace;
       cursor: pointer;
-      background: var(--bg-primary);
-      border-left: 3px solid transparent;
+      border-left: 2px solid transparent;
     }
     .file-item:hover {
       background: var(--bg-secondary);
     }
-    .file-item.solved {
-      border-left-color: var(--success);
-    }
-    .file-item.revise {
-      border-left-color: var(--warning);
-    }
+    .file-item.solved { border-left-color: var(--success); }
+    .file-item.revise { border-left-color: var(--warning); }
+    .file-item.active-file { background: var(--border-color); }
 
     .file-status {
       margin-left: auto;
       display: flex;
       gap: 4px;
+      opacity: 0.3;
+      transition: opacity 0.2s;
     }
+    .file-item:hover .file-status { opacity: 1; }
     .status-btn {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1rem;
-      padding: 2px 4px;
+      font-size: 0.9rem;
+      padding: 2px;
       color: var(--text-muted);
     }
-    .status-btn.solved-active { color: var(--success); }
-    .status-btn.active { color: var(--warning); }
+    .status-btn.solved-active { color: var(--success); opacity: 1; }
+    .status-btn.revise-active { color: var(--warning); opacity: 1; }
 
-    /* ===== MAIN PANEL ===== */
+    /* === MAIN PANEL === */
     .main {
       flex: 1;
       display: flex;
@@ -212,503 +210,655 @@
     }
 
     .header {
-      padding: 0.5rem 1rem;
+      padding: 0 1rem;
+      height: 35px;
       background: var(--header-bg);
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .nav-links {
       display: flex;
-      gap: 12px;
+      height: 100%;
     }
     .nav-link {
       text-decoration: none;
       color: var(--text-muted);
-      padding: 4px 8px;
-      border-radius: 4px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      font-size: 0.8rem;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid var(--border-color);
+      font-size: 0.75rem;
+      height: 100%;
     }
     .nav-link.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
     .button-group button {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 0.8rem;
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 2px;
+      font-size: 0.7rem;
       cursor: pointer;
-      margin-left: 5px;
     }
+    .button-group button:hover { background: var(--accent-hover); }
+    .button-group button.secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .button-group button.danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
 
-    /* Dashboard view */
-    .dashboard-container {
+    /* Views */
+    .dashboard-container, .code-view-container {
       display: none;
-      flex-direction: column;
-      height: 100%;
-      padding: 1.2rem 1.5rem;
-      overflow-y: auto;
-      background: var(--bg-primary);
+      flex: 1;
+      overflow: hidden;
     }
-    .dashboard-container.active { display: flex; }
-    .code-view-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .code-view-container.active { display: flex; }
+    .dashboard-container.active, .code-view-container.active { display: flex; flex-direction: column; }
 
+    /* Dashboard UI */
+    .dashboard-scroll {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
     .stats-cards {
       display: grid;
-      grid-template-columns: repeat(5,1fr);
-      gap: 12px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
     }
     .stat-card {
-      background: var(--bg-secondary);
+      background: var(--bg-sidebar);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 1rem 0.2rem;
+      border-radius: 4px;
+      padding: 1rem;
       text-align: center;
     }
     .stat-card .value {
-      font-size: 2rem;
-      font-weight: 600;
+      font-size: 1.8rem;
+      font-weight: 700;
       color: var(--accent);
+      display: block;
     }
+    .stat-card .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
 
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-    .chart-panel, .topic-progress-panel, .revision-panel {
-      background: var(--bg-secondary);
+    .chart-panel, .topic-progress-panel {
+      background: var(--bg-sidebar);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 4px;
+      padding: 1.5rem;
     }
-    .revision-panel { grid-column: span 2; }
-    .progress-bar {
-      height: 5px;
-      background: var(--border-color);
-      border-radius: 3px;
+    .revision-panel {
+        grid-column: span 2;
+        background: var(--bg-sidebar);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        border-radius: 4px;
     }
-    .progress-fill {
-      height: 100%;
-      background: var(--success);
-    }
-    .revision-items {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .revision-chip {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    .progress-bar { height: 6px; background: var(--border-color); border-radius: 10px; margin-top: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--success); transition: width 0.3s; }
 
-    /* === IMPROVED CODE PREVIEW: line numbers + vertical line === */
+    /* Code View */
     .file-meta {
-      padding: 0.3rem 1rem;
-      background: var(--bg-secondary);
+      padding: 4px 1rem;
+      background: var(--bg-sidebar);
       border-bottom: 1px solid var(--border-color);
       font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
-    .code-wrapper {
-      flex: 1;
-      overflow: auto;
-      background: var(--code-bg);
-    }
-
-    /* custom line-number block inside <pre> using display:flex */
+    .code-wrapper { flex: 1; overflow: auto; background: var(--code-bg); }
     pre.code-block {
       margin: 0 !important;
-      padding: 0.8rem 0 !important;
-      background: var(--code-bg) !important;
+      padding: 1rem 0 !important;
+      background: transparent !important;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
       font-family: 'Fira Code', monospace;
       display: flex;
       flex-direction: column;
-      width: 100%;
     }
-
-    .code-line {
-      display: flex;
-      width: 100%;
-      white-space: pre;
-    }
-
+    .code-line { display: flex; width: 100%; }
     .line-number-gutter {
-      display: inline-block;
-      width: 3.5rem;                /* fixed width for alignment */
+      width: 3.5rem;
       text-align: right;
-      padding-right: 1rem;
+      padding-right: 1.2rem;
       color: var(--line-number-color);
       user-select: none;
-      border-right: 1px solid var(--line-number-border);  /* VERTICAL LINE */
-      margin-right: 1rem;            /* extra spacing after border */
+      border-right: 1px solid var(--line-number-border);
+      margin-right: 1.2rem;
       flex-shrink: 0;
+      font-size: 11px;
     }
+    .line-code { flex: 1; white-space: pre; color: var(--text-primary); }
 
-    .line-code {
-      flex: 1;
-      white-space: pre;
-      color: var(--text-primary);
+    /* Notification Toast */
+    #toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--bg-sidebar);
+        border: 1px solid var(--accent);
+        color: var(--text-primary);
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        transform: translateY(100px);
+        transition: transform 0.3s;
+        z-index: 1000;
     }
+    #toast.show { transform: translateY(0); }
 
     .footer {
-      padding: 0.4rem 1rem;
-      font-size: 0.7rem;
+      padding: 4px 1rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border-color);
-      background: var(--bg-secondary);
+      background: var(--bg-sidebar);
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 </head>
 <body>
+  <div id="toast">Message</div>
+
   <div class="sidebar">
     <div class="sidebar-header">
-      <h2>📁 DSA-QUESTIONS</h2>
+      <h2>Explorer</h2>
       <div class="theme-toggle">
-        <button class="theme-btn active" onclick="setTheme('dark', event)">🌙 Dark</button>
-        <button class="theme-btn" onclick="setTheme('light', event)">☀️ Light</button>
+        <button class="theme-btn" id="themeDark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-btn" id="themeLight" onclick="setTheme('light')">Light</button>
       </div>
-      <input type="text" id="topicSearch" placeholder="Filter topics..." />
+      <input type="text" id="topicSearch" placeholder="Filter questions..." />
     </div>
     <div class="topics-scroll" id="topicsContainer">
-      <div id="topicsList">Loading topics…</div>
+      <div id="topicsList">Initializing...</div>
     </div>
   </div>
 
   <div class="main">
     <div class="header">
       <div class="nav-links">
-        <a href="#" class="nav-link active" id="linkCodeView" onclick="showCodeView(event)">📄 Code</a>
-        <a href="#" class="nav-link" id="linkDashboard" onclick="showDashboard(event)">📊 Dashboard</a>
+        <a href="#" class="nav-link active" id="linkCodeView" onclick="showView('code')">index.cpp</a>
+        <a href="#" class="nav-link" id="linkDashboard" onclick="showView('dashboard')">Stats</a>
       </div>
       <div class="button-group">
-        <button onclick="copyCode()">Copy</button>
+        <button class="secondary" title="Clear locally cached GitHub data" onclick="clearGHCachedData()">Clear Cache</button>
+        <button class="secondary" title="Force re-fetch everything from GitHub" onclick="refreshFromGitHub()">Refresh</button>
+        <button class="secondary" onclick="copyCode()">Copy</button>
         <button onclick="openOnGitHub()">GitHub</button>
-        <button onclick="resetProgress()">Reset</button>
       </div>
     </div>
 
-    <!-- DASHBOARD view -->
-    <div id="dashboardView" class="dashboard-container">
-      <div class="stats-cards">
-        <div class="stat-card"><span class="value" id="dashTotal">0</span><br>Total</div>
-        <div class="stat-card"><span class="value" id="dashSolved">0</span><br>Solved</div>
-        <div class="stat-card"><span class="value" id="dashPercent">0%</span><br>Complete</div>
-        <div class="stat-card"><span class="value" id="dashStreak">0</span><br>Streak</div>
-        <div class="stat-card"><span class="value" id="dashRevise">0</span><br>Revise</div>
-      </div>
-      <div class="dashboard-grid">
-        <div class="chart-panel">
-          <canvas id="dashboardChart" style="max-height:200px;"></canvas>
-        </div>
-        <div class="topic-progress-panel">
-          <h4 style="margin-bottom:8px;">📁 Topics</h4>
-          <div id="topicProgressListDashboard"></div>
-        </div>
-        <div class="revision-panel">
-          <h4>⏰ Need revision</h4>
-          <div class="revision-items" id="revisionChips"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CODE VIEW with improved line numbers + vertical line -->
     <div id="codeView" class="code-view-container active">
-      <div style="display:flex; gap:20px; padding:0.4rem 1rem; background:var(--bg-secondary); border-bottom:1px solid var(--border-color); font-size:0.85rem;">
-        <span>📄 Total: <span id="totalCount">0</span></span>
-        <span>✅ Solved: <span id="solvedCount">0</span></span>
-        <span>📈 <span id="progressPercent">0%</span></span>
-        <span>🔥 <span id="streakCount">0</span></span>
-        <span>⏰ <span id="reviseCount">0</span></span>
-      </div>
       <div class="file-meta">
-        <span id="currentFilePath">Select a .cpp file</span>
+        <span id="currentFilePath">Welcome. Click a file to start.</span>
       </div>
-      <div class="code-wrapper" id="codeWrapper">
-        <!-- we will inject lines inside a <pre class="code-block"> -->
-        <pre class="code-block" id="codeBlock"><div class="code-line"><span class="line-number-gutter">1</span><span class="line-code">// Click any .cpp file from the left sidebar</span></div></pre>
+      <div class="code-wrapper">
+        <pre class="code-block" id="codeBlock"><div class="code-line"><span class="line-number-gutter">1</span><span class="line-code">// Select a C++ file from the sidebar to view code.</span></div></pre>
       </div>
     </div>
-    <div class="footer">github/anurag-rastogi332/Dsa-Questions</div>
+
+    <div id="dashboardView" class="dashboard-container">
+      <div class="dashboard-scroll">
+          <div class="stats-cards">
+            <div class="stat-card"><span class="label">Total</span><span class="value" id="dashTotal">0</span></div>
+            <div class="stat-card"><span class="label">Solved</span><span class="value" id="dashSolved">0</span></div>
+            <div class="stat-card"><span class="label">Streak</span><span class="value" id="dashStreak">0</span></div>
+            <div class="stat-card"><span class="label">Revision</span><span class="value" id="dashRevise">0</span></div>
+          </div>
+          <div class="dashboard-grid">
+            <div class="chart-panel">
+              <h4 style="margin-bottom:15px; font-size:0.9rem;">Completion Status</h4>
+              <div style="height:150px;"><canvas id="dashboardChart"></canvas></div>
+            </div>
+            <div class="topic-progress-panel">
+              <h4 style="margin-bottom:10px; font-size:0.9rem;">Topic Progress</h4>
+              <div id="topicProgressListDashboard"></div>
+            </div>
+            <div class="revision-panel">
+              <h4 style="margin-bottom:10px; font-size:0.9rem;">Flagged for Revision</h4>
+              <div id="revisionChips" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            </div>
+          </div>
+          <div style="margin-top:20px; text-align:right;">
+              <button onclick="resetProgress()" class="danger" style="padding:4px 10px; cursor:pointer; font-size:0.7rem; border-radius:2px;">Reset All User Progress</button>
+          </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>UTF-8</span>
+      <span>C++</span>
+      <span id="statusInfo">Ready</span>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
   <script>
     (function() {
       const USERNAME = "anurag-rastogi332";
       const REPO = "Dsa-Questions";
       const BRANCH = "main";
+      const CACHE_PREFIX = "dsa_gh_cache_"; // Prefix for API cache
 
       let allTopics = [];
       let currentFilePath = "";
       let dashboardChart = null;
       let progress = { solved: {}, revise: {}, lastActive: null, streak: 0 };
 
+      // --- CACHE UTILS ---
+      function getCache(key) {
+        try {
+          const data = localStorage.getItem(CACHE_PREFIX + key);
+          return data ? JSON.parse(data) : null;
+        } catch (e) { return null; }
+      }
+
+      function setCache(key, data) {
+        try {
+          localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(data));
+        } catch (e) { console.warn("Cache full", e); }
+      }
+
+      window.clearGHCachedData = function() {
+        let count = 0;
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith(CACHE_PREFIX)) {
+            localStorage.removeItem(key);
+            count++;
+          }
+        });
+        showToast(`Cleared ${count} cached GitHub items.`);
+      };
+
+      window.refreshFromGitHub = async function() {
+        window.clearGHCachedData();
+        showToast("Re-fetching fresh data...");
+        await fetchTopics(true);
+        if (currentFilePath) {
+          await loadCode(currentFilePath, true);
+        }
+      };
+
+      // --- PROGRESS UTILS ---
+      function showToast(msg) {
+          const t = document.getElementById('toast');
+          t.textContent = msg;
+          t.classList.add('show');
+          setTimeout(() => t.classList.remove('show'), 3000);
+      }
+
       function loadProgress() {
-        const saved = localStorage.getItem('dsa_vscode_progress');
+        const saved = localStorage.getItem('dsa_vscode_v2');
         if (saved) {
           try {
             const p = JSON.parse(saved);
-            progress.solved = p.solved || {};
-            progress.revise = p.revise || {};
-            progress.lastActive = p.lastActive || null;
-            progress.streak = p.streak || 0;
-          } catch (e) {}
+            progress = { ...progress, ...p };
+          } catch (e) { console.error("Progress load error", e); }
         }
         updateStreak();
       }
+
       function saveProgress() {
-        localStorage.setItem('dsa_vscode_progress', JSON.stringify(progress));
+        localStorage.setItem('dsa_vscode_v2', JSON.stringify(progress));
         updateAllUI();
-        document.querySelectorAll('.file-item').forEach(el => {
-          if (el.dataset.path) updateFileUI(el.dataset.path);
-        });
       }
+
       function updateStreak() {
-        if (!progress.lastActive) { progress.streak = 0; return; }
+        if (!progress.lastActive) return;
         const last = new Date(progress.lastActive); last.setHours(0,0,0,0);
         const today = new Date(); today.setHours(0,0,0,0);
-        const diff = (today - last) / 86400000;
+        const diff = (today - last) / (1000 * 60 * 60 * 24);
         if (diff > 1) progress.streak = 0;
       }
+
       function markSolvedToday() {
         const today = new Date().toDateString();
         if (progress.lastActive !== today) {
-          const y = new Date(); y.setDate(y.getDate()-1);
-          if (progress.lastActive === y.toDateString()) progress.streak++;
+          const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+          if (progress.lastActive === yesterday.toDateString()) progress.streak++;
           else progress.streak = 1;
           progress.lastActive = today;
         }
       }
 
+      // --- UI HANDLERS ---
+      window.setTheme = function(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('dsa_theme', theme);
+        document.getElementById('themeDark').classList.toggle('active', theme === 'dark');
+        document.getElementById('themeLight').classList.toggle('active', theme === 'light');
+      };
+
+      window.showView = function(view) {
+        document.getElementById('codeView').classList.toggle('active', view === 'code');
+        document.getElementById('dashboardView').classList.toggle('active', view === 'dashboard');
+        document.getElementById('linkCodeView').classList.toggle('active', view === 'code');
+        document.getElementById('linkDashboard').classList.toggle('active', view === 'dashboard');
+        if (view === 'dashboard') updateAllUI();
+      };
+
       window.toggleSolved = function(path, e) {
         e.stopPropagation();
         if (progress.solved[path]) delete progress.solved[path];
-        else { progress.solved[path] = true; delete progress.revise[path]; markSolvedToday(); }
-        saveProgress(); updateFileUI(path);
+        else {
+            progress.solved[path] = true;
+            delete progress.revise[path];
+            markSolvedToday();
+            showToast("Marked as Solved");
+        }
+        saveProgress();
       };
+
       window.toggleRevise = function(path, e) {
         e.stopPropagation();
         if (progress.revise[path]) delete progress.revise[path];
-        else progress.revise[path] = true;
-        saveProgress(); updateFileUI(path);
+        else {
+            progress.revise[path] = true;
+            showToast("Added to Revision");
+        }
+        saveProgress();
       };
-      function updateFileUI(path) {
-        const el = document.querySelector(`.file-item[data-path="${path}"]`);
-        if (!el) return;
-        el.classList.toggle('solved', !!progress.solved[path]);
-        el.classList.toggle('revise', !!progress.revise[path]);
-        const sb = el.querySelector('.solved-btn');
-        const rb = el.querySelector('.revise-btn');
-        if (sb) { sb.textContent = progress.solved[path] ? '✅' : '⬜'; sb.classList.toggle('solved-active', !!progress.solved[path]); }
-        if (rb) { rb.textContent = progress.revise[path] ? '⭐' : '☆'; rb.classList.toggle('active', !!progress.revise[path]); }
-      }
 
-      function countFiles() {
-        return document.querySelectorAll('.file-item').length;
-      }
+      window.copyCode = () => {
+        const lines = Array.from(document.querySelectorAll('#codeBlock .line-code')).map(el => el.innerText).join('\n');
+        const textArea = document.createElement("textarea");
+        textArea.value = lines;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast("Code copied to clipboard");
+        } catch (err) {
+            showToast("Failed to copy");
+        }
+        document.body.removeChild(textArea);
+      };
 
-      function updateAllUI() {
-        const total = countFiles();
-        const solved = Object.keys(progress.solved).length;
-        const revise = Object.keys(progress.revise).length;
-        const percent = total ? Math.round((solved/total)*100) : 0;
-        document.getElementById('totalCount').textContent = total;
-        document.getElementById('solvedCount').textContent = solved;
-        document.getElementById('progressPercent').textContent = percent+'%';
-        document.getElementById('streakCount').textContent = progress.streak;
-        document.getElementById('reviseCount').textContent = revise;
-        document.getElementById('dashTotal').textContent = total;
-        document.getElementById('dashSolved').textContent = solved;
-        document.getElementById('dashPercent').textContent = percent+'%';
-        document.getElementById('dashStreak').textContent = progress.streak;
-        document.getElementById('dashRevise').textContent = revise;
+      window.openOnGitHub = () => {
+        if (!currentFilePath) return showToast("No file selected");
+        window.open(`https://github.com/${USERNAME}/${REPO}/blob/${BRANCH}/${currentFilePath}`, '_blank');
+      };
 
-        if (dashboardChart) {
-          dashboardChart.data.datasets[0].data = [solved, total-solved];
-          dashboardChart.update();
+      window.resetProgress = () => {
+        if (confirm("Reset all locally saved progress? This cannot be undone.")) {
+            progress = { solved: {}, revise: {}, lastActive: null, streak: 0 };
+            saveProgress();
+            location.reload();
+        }
+      };
+
+      // --- DATA FETCHING (WITH CACHING) ---
+      async function fetchTopics(force = false) {
+        if (!force) {
+          const cached = getCache('topics');
+          if (cached) {
+            allTopics = cached;
+            renderTopics(allTopics);
+            return;
+          }
         }
 
-        const topicsMap = {};
-        document.querySelectorAll('.file-item').forEach(el => {
-          const p = el.dataset.path; if (!p) return;
-          const topic = p.split('/')[0];
-          if (!topicsMap[topic]) topicsMap[topic] = { total:0, solved:0 };
-          topicsMap[topic].total++;
-          if (progress.solved[p]) topicsMap[topic].solved++;
-        });
-        let topicHtml = '';
-        for (let [t, d] of Object.entries(topicsMap)) {
-          let pct = Math.round((d.solved/d.total)*100) || 0;
-          topicHtml += `<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;"><span>${t}</span><span>${d.solved}/${d.total} ${pct}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
-        }
-        document.getElementById('topicProgressListDashboard').innerHTML = topicHtml || '<p>No topics</p>';
-
-        let chips = '';
-        Object.keys(progress.revise).forEach(p => {
-          const name = p.split('/').pop();
-          chips += `<div class="revision-chip" onclick="loadCode('${p}'); showCodeView(event)">⭐ ${name}</div>`;
-        });
-        document.getElementById('revisionChips').innerHTML = chips || '<p style="color:var(--text-muted);">None</p>';
-      }
-
-      // GitHub fetch
-      async function fetchTopics() {
         try {
           const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`;
           const res = await fetch(url);
+          if (!res.ok) throw new Error("API Limit or Repo missing");
           const data = await res.json();
           allTopics = data.filter(d => d.type === 'dir');
+          setCache('topics', allTopics);
           renderTopics(allTopics);
-        } catch { document.getElementById('topicsList').innerHTML = '❌ Error'; }
+        } catch (err) {
+          document.getElementById('topicsList').innerHTML = `<div style="padding:10px; color:var(--danger); font-size:0.8rem;">Failed to load repository. Check internet or branch name.</div>`;
+        }
       }
 
       function renderTopics(topics) {
         let html = '';
         topics.forEach(t => {
-          html += `<div class="topic-item"><div class="topic-header" onclick="toggleFiles('${t.name}','${t.url}',this)">📁 ${t.name}<span class="arrow">▶</span></div><div class="files-container" id="files-${t.name.replace(/[^a-z0-9]/gi,'_')}"></div></div>`;
+          html += `
+            <div class="topic-item">
+              <div class="topic-header" onclick="toggleFolder('${t.name}', '${t.url}', this)">
+                <span class="icon">📁</span> ${t.name}
+                <span class="arrow">▶</span>
+              </div>
+              <div class="files-container" id="files-${t.name.replace(/\s+/g, '-')}"></div>
+            </div>`;
         });
-        document.getElementById('topicsList').innerHTML = html;
+        document.getElementById('topicsList').innerHTML = html || '<div style="padding:10px; color:var(--text-muted);">No folders found.</div>';
       }
 
-      window.toggleFiles = async function(folder, apiUrl, header) {
-        const container = header.nextElementSibling;
-        if (container.style.display === 'block') {
+      window.toggleFolder = async function(name, apiUrl, el, force = false) {
+        const container = el.nextElementSibling;
+        const isOpen = el.classList.contains('open');
+
+        if (isOpen && !force) {
+          el.classList.remove('open');
           container.style.display = 'none';
-          header.classList.remove('open');
           return;
         }
-        if (!container.children.length || container.children[0]?.innerHTML === 'Loading...') {
-          container.innerHTML = 'Loading...';
+
+        el.classList.add('open');
+        container.style.display = 'block';
+
+        const cacheKey = `files_${name}`;
+        let cpps = null;
+
+        if (!force) {
+          const cached = getCache(cacheKey);
+          if (cached) cpps = cached;
+        }
+
+        if (!cpps) {
+          container.innerHTML = `<div style="padding:4px 8px; font-size:0.7rem; opacity:0.5;">Loading files...</div>`;
           try {
             const res = await fetch(apiUrl);
             const items = await res.json();
-            const cpps = items.filter(f => f.type === 'file' && f.name.endsWith('.cpp'));
-            container.innerHTML = '';
-            cpps.forEach(f => {
-              const div = document.createElement('div');
-              div.className = `file-item ${progress.solved[f.path]?'solved':''} ${progress.revise[f.path]?'revise':''}`;
-              div.dataset.path = f.path;
-              div.innerHTML = `<span>📄 ${f.name}</span><div class="file-status"><button class="status-btn solved-btn ${progress.solved[f.path]?'solved-active':''}" onclick="toggleSolved('${f.path}', event)">${progress.solved[f.path]?'✅':'⬜'}</button><button class="status-btn revise-btn ${progress.revise[f.path]?'active':''}" onclick="toggleRevise('${f.path}', event)">${progress.revise[f.path]?'⭐':'☆'}</button></div>`;
-              div.addEventListener('click', (e) => { if (!e.target.classList.contains('status-btn')) loadCode(f.path); });
-              container.appendChild(div);
-            });
-            updateAllUI();
-          } catch { container.innerHTML = '<p>Error</p>'; }
+            cpps = items.filter(f => f.name.endsWith('.cpp'));
+            setCache(cacheKey, cpps);
+          } catch (err) {
+            container.innerHTML = `<div style="color:var(--danger); font-size:0.7rem;">Fetch error</div>`;
+            return;
+          }
         }
-        container.style.display = 'block';
-        header.classList.add('open');
+
+        container.innerHTML = "";
+        cpps.forEach(f => {
+          const item = document.createElement('div');
+          const isSolved = progress.solved[f.path];
+          const isRevise = progress.revise[f.path];
+
+          item.className = `file-item ${isSolved ? 'solved' : ''} ${isRevise ? 'revise' : ''}`;
+          item.dataset.path = f.path;
+          item.innerHTML = `
+            <span>📄 ${f.name}</span>
+            <div class="file-status">
+              <button class="status-btn solved-btn ${isSolved ? 'solved-active' : ''}" onclick="toggleSolved('${f.path}', event)">${isSolved ? '✅' : '⬜'}</button>
+              <button class="status-btn revise-btn ${isRevise ? 'revise-active' : ''}" onclick="toggleRevise('${f.path}', event)">${isRevise ? '⭐' : '☆'}</button>
+            </div>
+          `;
+          item.onclick = (e) => {
+              if (e.target.closest('.status-btn')) return;
+              loadCode(f.path);
+              document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active-file'));
+              item.classList.add('active-file');
+          };
+          container.appendChild(item);
+        });
+
+        if (cpps.length === 0) container.innerHTML = `<div style="padding:4px 8px; font-size:0.7rem; opacity:0.5;">No .cpp files</div>`;
+        updateAllUI(); // Refresh status icons
       };
 
-      window.loadCode = async function(path) {
+      window.loadCode = async function(path, force = false) {
         currentFilePath = path;
         document.getElementById('currentFilePath').textContent = path;
+        document.getElementById('statusInfo').textContent = "Loading " + path.split('/').pop();
+
         const codeBlock = document.getElementById('codeBlock');
-        codeBlock.innerHTML = '<div class="code-line"><span class="line-number-gutter">...</span><span class="line-code">// loading...</span></div>';
-        try {
-          const url = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path}`;
-          const res = await fetch(url);
-          let text = await res.text();
-          // build lines with vertical separator via line-number-gutter border-right
-          const lines = text.split('\n');
-          let htmlLines = '';
-          lines.forEach((line, idx) => {
-            const lineNum = idx + 1;
-            // escape html entities
-            const escaped = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            htmlLines += `<div class="code-line"><span class="line-number-gutter">${lineNum}</span><span class="line-code">${escaped}</span></div>`;
-          });
-          codeBlock.innerHTML = htmlLines;
-          // re-run Prism highlighting on each line's code part (optional, but we apply to .line-code)
-          document.querySelectorAll('.code-line .line-code').forEach(span => {
-            const code = span.innerText;
-            span.innerHTML = Prism.highlight(code, Prism.languages.cpp, 'cpp');
-          });
-        } catch {
-          codeBlock.innerHTML = '<div class="code-line"><span class="line-number-gutter">!</span><span class="line-code">// Error loading file</span></div>';
+        const cacheKey = `code_${path}`;
+        let text = null;
+
+        if (!force) {
+          const cached = getCache(cacheKey);
+          if (cached) text = cached;
         }
+
+        if (!text) {
+          codeBlock.innerHTML = `<div class="code-line"><span class="line-number-gutter">...</span><span class="line-code">// fetching code from GitHub...</span></div>`;
+          try {
+            const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+            const url = `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${encodedPath}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("GitHub error: " + res.status);
+            text = await res.text();
+            setCache(cacheKey, text);
+          } catch (err) {
+            console.error("Code Load Error:", err);
+            codeBlock.innerHTML = `<div class="code-line"><span class="line-number-gutter">!</span><span class="line-code" style="color:var(--danger)">// Error loading file: ${err.message}</span></div>`;
+            document.getElementById('statusInfo').textContent = "Load Failed";
+            return;
+          }
+        }
+
+        const lines = text.split('\n');
+        let html = "";
+        const hasGrammar = typeof Prism !== 'undefined' && Prism.languages.cpp;
+
+        lines.forEach((line, idx) => {
+          const escaped = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const highlighted = hasGrammar ? Prism.highlight(escaped, Prism.languages.cpp, 'cpp') : escaped;
+          html += `
+            <div class="code-line">
+              <span class="line-number-gutter">${idx + 1}</span>
+              <span class="line-code">${highlighted}</span>
+            </div>`;
+        });
+
+        codeBlock.innerHTML = html;
+        document.getElementById('statusInfo').textContent = "Line Count: " + lines.length;
+        showView('code');
       };
 
-      window.copyCode = () => {
-        const lines = Array.from(document.querySelectorAll('#codeBlock .code-line .line-code')).map(el => el.innerText).join('\n');
-        navigator.clipboard.writeText(lines); alert('Copied (code only)');
-      };
-      window.openOnGitHub = () => { if(currentFilePath) window.open(`https://github.com/${USERNAME}/${REPO}/blob/${BRANCH}/${currentFilePath}`); };
-      window.resetProgress = () => { if(confirm('Reset all progress?')) { progress = {solved:{},revise:{},lastActive:null,streak:0}; saveProgress(); document.querySelectorAll('.file-item').forEach(el => { const p = el.dataset.path; if(p){ el.classList.remove('solved','revise'); const sb=el.querySelector('.solved-btn'); if(sb){sb.textContent='⬜';sb.classList.remove('solved-active');} const rb=el.querySelector('.revise-btn'); if(rb){rb.textContent='☆';rb.classList.remove('active');} }}); updateAllUI(); } };
+      // --- DASHBOARD ---
+      function updateAllUI() {
+        const fileItems = document.querySelectorAll('.file-item');
+        const total = fileItems.length || 0;
+        const solvedCount = Object.keys(progress.solved).length;
+        const reviseCount = Object.keys(progress.revise).length;
 
-      window.showDashboard = (e) => {
-        e?.preventDefault();
-        document.getElementById('dashboardView').classList.add('active');
-        document.getElementById('codeView').classList.remove('active');
-        document.getElementById('linkDashboard').classList.add('active');
-        document.getElementById('linkCodeView').classList.remove('active');
-        updateAllUI();
-      };
-      window.showCodeView = (e) => {
-        e?.preventDefault();
-        document.getElementById('codeView').classList.add('active');
-        document.getElementById('dashboardView').classList.remove('active');
-        document.getElementById('linkCodeView').classList.add('active');
-        document.getElementById('linkDashboard').classList.remove('active');
-      };
+        document.getElementById('dashTotal').textContent = total;
+        document.getElementById('dashSolved').textContent = solvedCount;
+        document.getElementById('dashStreak').textContent = progress.streak;
+        document.getElementById('dashRevise').textContent = reviseCount;
+
+        fileItems.forEach(item => {
+            const p = item.dataset.path;
+            const isS = !!progress.solved[p];
+            const isR = !!progress.revise[p];
+            item.classList.toggle('solved', isS);
+            item.classList.toggle('revise', isR);
+            const sBtn = item.querySelector('.solved-btn');
+            const rBtn = item.querySelector('.revise-btn');
+            if(sBtn) { sBtn.textContent = isS ? '✅' : '⬜'; sBtn.classList.toggle('solved-active', isS); }
+            if(rBtn) { rBtn.textContent = isR ? '⭐' : '☆'; rBtn.classList.toggle('revise-active', isR); }
+        });
+
+        if (dashboardChart) {
+          dashboardChart.data.datasets[0].data = [solvedCount, Math.max(0, total - solvedCount)];
+          dashboardChart.update();
+        }
+
+        const topics = {};
+        // Use cached topics or current topics to build mapping
+        allTopics.forEach(t => topics[t.name] = { total: 0, solved: 0 });
+        
+        fileItems.forEach(item => {
+            const topicName = item.dataset.path.split('/')[0];
+            if (!topics[topicName]) topics[topicName] = { total: 0, solved: 0 };
+            topics[topicName].total++;
+            if (progress.solved[item.dataset.path]) topics[topicName].solved++;
+        });
+
+        let topicHtml = "";
+        Object.entries(topics).forEach(([name, data]) => {
+            if (data.total === 0) return; // Only show topics that have files loaded/listed
+            const pct = Math.round((data.solved / data.total) * 100);
+            topicHtml += `
+              <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px;">
+                    <span>${name}</span>
+                    <span style="color:var(--text-muted)">${data.solved}/${data.total} (${pct}%)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+              </div>`;
+        });
+        document.getElementById('topicProgressListDashboard').innerHTML = topicHtml || '<p style="font-size:0.8rem; color:var(--text-muted);">Expand folders in sidebar to see detailed progress.</p>';
+
+        let revisionHtml = "";
+        Object.keys(progress.revise).forEach(path => {
+            const name = path.split('/').pop();
+            revisionHtml += `<div onclick="loadCode('${path}')" style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:4px 10px; border-radius:15px; font-size:0.7rem; cursor:pointer; color:var(--warning)">⭐ ${name}</div>`;
+        });
+        document.getElementById('revisionChips').innerHTML = revisionHtml || '<p style="font-size:0.8rem; color:var(--text-muted);">No items flagged.</p>';
+      }
 
       function initChart() {
         const ctx = document.getElementById('dashboardChart').getContext('2d');
         dashboardChart = new Chart(ctx, {
           type: 'doughnut',
-          data: { labels: ['Solved','Remaining'], datasets: [{ data: [0,1], backgroundColor: ['#6a9955', '#3e3e42'], borderWidth: 0 }] },
-          options: { cutout:'70%', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+          data: {
+            labels: ['Solved', 'Remaining'],
+            datasets: [{
+              data: [0, 1],
+              backgroundColor: ['#6a9955', '#3e3e42'],
+              borderWidth: 0,
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            cutout: '80%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+          }
         });
       }
 
-      window.setTheme = function(theme, ev) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
-        ev.target.classList.add('active');
-      };
-      function loadTheme() {
-        const saved = localStorage.getItem('theme') || 'dark';
-        const btn = saved==='dark'?document.querySelector('.theme-btn:first-child'):document.querySelector('.theme-btn:last-child');
-        if (btn) { document.documentElement.setAttribute('data-theme', saved); btn.classList.add('active'); }
-      }
-
       document.getElementById('topicSearch').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        renderTopics(allTopics.filter(t => t.name.toLowerCase().includes(term)));
+          const val = e.target.value.toLowerCase();
+          document.querySelectorAll('.topic-item').forEach(item => {
+              const name = item.querySelector('.topic-header').textContent.toLowerCase();
+              item.style.display = name.includes(val) ? 'block' : 'none';
+          });
       });
 
+      // --- INITIALIZE ---
       loadProgress();
-      loadTheme();
-      fetchTopics();
+      setTheme(localStorage.getItem('dsa_theme') || 'dark');
+      fetchTopics(); // This will use cache if available
       initChart();
-      window.updateAllUI = updateAllUI;
+
     })();
   </script>
 </body>
