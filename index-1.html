@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DSA Flow · VS Code style Pro</title>
+  <title>DSA Flow · VS Code style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -34,12 +34,6 @@
       --line-number-color: #6e7681;
       --line-number-border: #3e3e42;
       --sidebar-width: 300px;
-      
-      --hm-0: #2d2d30;
-      --hm-1: #0e4429;
-      --hm-2: #006d32;
-      --hm-3: #26a641;
-      --hm-4: #39d353;
     }
 
     [data-theme="light"] {
@@ -59,12 +53,6 @@
       --danger: #a1260d;
       --line-number-color: #237893;
       --line-number-border: #c0c0c0;
-      
-      --hm-0: #ebedf0;
-      --hm-1: #9be9a8;
-      --hm-2: #40c463;
-      --hm-3: #30a14e;
-      --hm-4: #216e39;
     }
 
     body {
@@ -152,23 +140,13 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      cursor: pointer;
-      user-select: none;
     }
-    .sidebar-section-label:hover { color: var(--text-primary); }
 
     .topics-scroll {
       flex: 1;
       overflow-y: auto;
       padding: 0.5rem;
     }
-
-    #recentFilesList {
-        display: none;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    #recentFilesList.active { display: block; }
 
     .topic-item { margin-bottom: 2px; }
 
@@ -321,7 +299,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 15px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .stat-card {
       background: var(--bg-sidebar);
@@ -329,7 +307,6 @@
       border-radius: 4px;
       padding: 1rem;
       text-align: center;
-      position: relative;
     }
     .stat-card .value {
       font-size: 1.8rem;
@@ -338,32 +315,6 @@
       display: block;
     }
     .stat-card .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
-    .reward-icon { position: absolute; top: 5px; right: 5px; font-size: 1.2rem; filter: grayscale(1); opacity: 0.3; }
-    .reward-icon.unlocked { filter: grayscale(0); opacity: 1; }
-
-    /* Heatmap */
-    .heatmap-panel {
-        background: var(--bg-sidebar);
-        border: 1px solid var(--border-color);
-        padding: 1rem;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-    .heatmap-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .heatmap-container {
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-rows: repeat(7, 10px);
-        gap: 3px;
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-    .heatmap-cell { width: 10px; height: 10px; border-radius: 2px; cursor: pointer; }
-    .hm-level-0 { background: var(--hm-0); }
-    .hm-level-1 { background: var(--hm-1); }
-    .hm-level-2 { background: var(--hm-2); }
-    .hm-level-3 { background: var(--hm-3); }
-    .hm-level-4 { background: var(--hm-4); }
 
     .dashboard-grid {
       display: grid;
@@ -417,63 +368,28 @@
         overflow: hidden;
     }
 
-    .code-wrapper { 
-        flex: 1; 
-        overflow: auto; 
-        background: var(--code-bg); 
-        position: relative; 
-        display: flex;
-        flex-direction: column;
-    }
-
-    #emptyStateView {
+    .code-wrapper { flex: 2; overflow: auto; background: var(--code-bg); position: relative; }
+    
+    .explanation-wrapper {
         flex: 1;
+        background: var(--bg-sidebar);
+        border-left: 1px solid var(--border-color);
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 2rem;
+        padding: 1rem;
     }
-    #emptyStateView h3 { color: var(--text-secondary); margin-bottom: 10px; }
-    #emptyStateView p { color: var(--text-muted); font-size: 0.85rem; max-width: 400px; margin-bottom: 20px; }
-    #emptyStateView .sync-btn {
-        background: var(--accent);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* Embedded Preload UI (Now inside empty state) */
-    #embeddedPreloadUI {
-        display: none;
-        background: var(--bg-secondary);
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        width: 350px;
-        text-align: center;
-        margin-top: 10px;
-    }
-    .preload-progress-outer {
-        width: 100%;
-        height: 6px;
+    .explanation-wrapper h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
+    .explanation-wrapper textarea {
+        flex: 1;
         background: var(--bg-primary);
-        border-radius: 3px;
-        margin: 15px 0;
-        overflow: hidden;
-    }
-    .preload-progress-inner {
-        height: 100%;
-        background: var(--accent);
-        width: 0%;
-        transition: width 0.1s;
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 10px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        resize: none;
+        outline: none;
     }
 
     pre.code-block {
@@ -485,7 +401,6 @@
       font-family: 'Fira Code', monospace;
       display: flex;
       flex-direction: column;
-      display: none; 
     }
     .code-line { display: flex; width: 100%; }
     .line-number-gutter {
@@ -500,50 +415,6 @@
       font-size: 11px;
     }
     .line-code { flex: 1; white-space: pre; color: var(--text-primary); }
-
-    /* OTP Modal */
-    .modal-overlay {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        backdrop-filter: blur(2px);
-    }
-    .modal-box {
-        background: var(--bg-sidebar);
-        border: 1px solid var(--accent);
-        padding: 2rem;
-        border-radius: 8px;
-        width: 320px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .otp-display {
-        background: var(--bg-primary);
-        color: var(--warning);
-        font-family: 'Fira Code', monospace;
-        font-size: 1.5rem;
-        padding: 10px;
-        letter-spacing: 5px;
-        margin: 15px 0;
-        border-radius: 4px;
-        user-select: none;
-    }
-    .otp-input {
-        width: 100%;
-        background: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        padding: 10px;
-        text-align: center;
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-        outline: none;
-    }
-    .otp-input:focus { border-color: var(--accent); }
 
     /* Notification Toast */
     #toast {
@@ -563,6 +434,42 @@
     }
     #toast.show { transform: translateY(0); }
 
+    /* Preload Overlay */
+    #preloadOverlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        color: white;
+    }
+    .preload-box {
+        background: var(--bg-sidebar);
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        width: 400px;
+        text-align: center;
+    }
+    .preload-progress-outer {
+        width: 100%;
+        height: 8px;
+        background: var(--bg-primary);
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+    .preload-progress-inner {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.1s;
+    }
+
     .footer {
       padding: 4px 1rem;
       font-size: 0.65rem;
@@ -573,29 +480,30 @@
       justify-content: space-between;
     }
 
+    /* Print styles */
     @media print {
         body * { visibility: hidden; }
         #codeView, #codeView * { visibility: visible; }
         #codeView { position: absolute; left: 0; top: 0; width: 100%; }
         .sidebar, .header, .footer, .button-group, .file-meta button { display: none !important; }
         .code-layout-wrapper { display: block; }
+        .explanation-wrapper { border-left: none; margin-top: 20px; border-top: 1px solid #ccc; }
+        textarea { border: none !important; }
+        .line-number-gutter { color: #888; border-right: 1px solid #ddd; }
     }
   </style>
 </head>
 <body>
   <div id="toast">Message</div>
 
-  <!-- OTP Modal -->
-  <div id="otpModal" class="modal-overlay">
-      <div class="modal-box">
-          <h3 id="modalTitle">Confirm Action</h3>
-          <p style="font-size:0.8rem; margin-top:10px; color:var(--text-muted);" id="modalDesc">Enter the OTP below to confirm.</p>
-          <div id="otpDisplay" class="otp-display">0000</div>
-          <input type="text" id="otpInput" class="otp-input" placeholder="Type OTP here" maxlength="4">
-          <div style="display:flex; gap:10px;">
-              <button class="theme-btn" onclick="closeOTPModal()">Cancel</button>
-              <button class="theme-btn active" id="confirmActionBtn">Confirm</button>
+  <div id="preloadOverlay">
+      <div class="preload-box">
+          <h3 style="margin-bottom:10px;">Syncing Repository</h3>
+          <p id="preloadStatus" style="font-size:0.85rem; color:var(--text-muted);">Initializing setup...</p>
+          <div class="preload-progress-outer">
+              <div id="preloadProgress" class="preload-progress-inner"></div>
           </div>
+          <p id="preloadFileCount" style="font-size:0.75rem; font-family:'Fira Code';">0 / 0</p>
       </div>
   </div>
 
@@ -610,11 +518,11 @@
     </div>
     
     <div class="topics-scroll">
-      <div class="sidebar-section-label" onclick="toggleRecentFilesUI()">🕒 Recent Files <span id="recentsArrow" style="margin-left:auto; font-size:0.6rem; transition:0.2s;">▶</span></div>
+      <div class="sidebar-section-label">🕒 Recent Files</div>
       <div id="recentFilesList"></div>
 
       <div class="sidebar-section-label">📂 Topics</div>
-      <div id="topicsList">Connect to start...</div>
+      <div id="topicsList">Initializing...</div>
     </div>
   </div>
 
@@ -628,55 +536,31 @@
           </div>
       </div>
       <div class="button-group">
-        <button class="secondary" onclick="exportToPDF()">🖨️ PDF</button>
+        <button class="secondary" onclick="clearGHCachedData()">Clear Cache</button>
+        <button class="secondary" onclick="refreshFromGitHub()">Refresh</button>
+        <button onclick="exportToPDF()">🖨️ PDF</button>
         <button onclick="openOnGitHub()">GitHub</button>
       </div>
     </div>
 
     <div id="codeView" class="code-view-container active">
       <div class="file-meta">
-        <span id="currentFilePath">Welcome to DSA Flow Pro</span>
+        <span id="currentFilePath">Welcome. Select a problem.</span>
         <button class="secondary" style="font-size:0.65rem; padding:2px 6px;" onclick="copyCode()">Copy Code</button>
       </div>
       <div class="code-layout-wrapper">
           <div class="code-wrapper">
-            <!-- Empty State -->
-            <div id="emptyStateView">
-                <h3>Ready to solve some problems?</h3>
-                <p>Website is open. Sabse pehle GitHub se questions fetch karne honge taaki aap browse kar sakein.</p>
-                
-                <button id="mainSyncBtn" class="sync-btn" onclick="startPreload()">
-                    <span>🔁</span> Connect & Sync Repository
-                </button>
-
-                <!-- Localized Progress Box -->
-                <div id="embeddedPreloadUI">
-                    <p id="preloadStatus" style="font-size:0.8rem; font-weight:500;">Initializing...</p>
-                    <div class="preload-progress-outer">
-                        <div id="preloadProgress" class="preload-progress-inner"></div>
-                    </div>
-                    <p id="preloadFileCount" style="font-size:0.7rem; color:var(--text-muted); font-family:'Fira Code';">0 / 0</p>
-                </div>
-            </div>
-            <!-- Code Block -->
-            <pre class="code-block" id="codeBlock"></pre>
+            <pre class="code-block" id="codeBlock"><div class="code-line"><span class="line-number-gutter">1</span><span class="line-code">// Select a C++ file from the explorer to begin.</span></div></pre>
+          </div>
+          <div class="explanation-wrapper">
+              <h4>Code Notes / Explanation</h4>
+              <textarea id="codeNotes" placeholder="Explain your logic, time complexity (O(N)), or approach here before exporting to PDF..."></textarea>
           </div>
       </div>
     </div>
 
     <div id="dashboardView" class="dashboard-container">
       <div class="dashboard-scroll">
-          
-          <div class="heatmap-panel">
-              <div class="heatmap-header">
-                  <h4 style="font-size:0.85rem;">Activity Heatmap (6 Months)</h4>
-                  <div style="display:flex; gap:5px; font-size:0.65rem; color:var(--text-muted); align-items:center;">
-                      Less <div class="heatmap-cell hm-level-0"></div><div class="heatmap-cell hm-level-1"></div><div class="heatmap-cell hm-level-2"></div><div class="heatmap-cell hm-level-3"></div><div class="heatmap-cell hm-level-4"></div> More
-                  </div>
-              </div>
-              <div id="heatmapContainer" class="heatmap-container"></div>
-          </div>
-
           <div class="goal-panel" style="margin-bottom:20px;">
               <div>
                   <h4 style="font-size:0.9rem;">Daily Goal Progress</h4>
@@ -692,21 +576,10 @@
           </div>
 
           <div class="stats-cards">
-            <div class="stat-card">
-                <span class="label">Grand Total</span><span class="value" id="dashTotal">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="label">Solved</span><span class="value" id="dashSolved">0</span>
-                <span class="reward-icon" id="badge-10" title="Solved 10 Problems">🏆</span>
-            </div>
-            <div class="stat-card">
-                <span class="label">Day Streak</span><span class="value" id="dashStreak">0</span>
-                <span class="reward-icon" id="badge-streak" title="7 Day Streak">🔥</span>
-            </div>
-            <div class="stat-card">
-                <span class="label">Solved Today</span><span class="value" id="solvedToday">0</span>
-                <span class="reward-icon" id="badge-king" title="Daily Goal Master">👑</span>
-            </div>
+            <div class="stat-card"><span class="label">Grand Total</span><span class="value" id="dashTotal">0</span></div>
+            <div class="stat-card"><span class="label">Solved</span><span class="value" id="dashSolved">0</span></div>
+            <div class="stat-card"><span class="label">Day Streak</span><span class="value" id="dashStreak">0</span></div>
+            <div class="stat-card"><span class="label">Solved Today</span><span class="value" id="solvedToday">0</span></div>
           </div>
           
           <div class="dashboard-grid">
@@ -722,15 +595,9 @@
               <h4 style="margin-bottom:10px; font-size:0.9rem;">Starred Questions (Revision)</h4>
               <div id="revisionChips" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
             </div>
-
-            <div class="revision-panel" style="background:rgba(244, 135, 113, 0.05);">
-                <h4 style="margin-bottom:15px; font-size:0.9rem; color:var(--danger);">System Controls (Authentication Required)</h4>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="theme-btn danger" style="padding:8px 15px; border:1px solid var(--danger);" onclick="triggerAction('full-reset')">🧨 Full Website Reset</button>
-                    <button class="theme-btn secondary" style="padding:8px 15px;" onclick="triggerAction('resync-repo')">🔁 Re-sync GitHub Data</button>
-                    <button class="theme-btn secondary" style="padding:8px 15px;" onclick="triggerAction('reset-dashboard')">📊 Reset Dashboard Progress</button>
-                </div>
-            </div>
+          </div>
+          <div style="margin-top:20px; text-align:right;">
+              <button onclick="resetProgress()" class="danger" style="padding:4px 10px; cursor:pointer; font-size:0.7rem; border-radius:2px;">Reset User Progress</button>
           </div>
       </div>
     </div>
@@ -756,9 +623,8 @@
       let allTopics = [];
       let currentFilePath = "";
       let dashboardChart = null;
-      let activeOTP = "";
-      let currentAction = "";
       
+      // Extended progress state
       let progress = { 
           solved: {}, 
           revise: {}, 
@@ -767,10 +633,10 @@
           dailyGoal: 5,
           solvedToday: 0,
           lastSolvedDate: null,
-          recentFiles: [],
-          history: {}
+          recentFiles: [] // Array of {path, name}
       };
 
+      // --- CACHE & STORAGE ---
       function getCache(key) {
         try {
           const data = localStorage.getItem(CACHE_PREFIX + key);
@@ -784,44 +650,24 @@
         } catch (e) { console.warn("Cache full", e); }
       }
 
-      window.triggerAction = function(action) {
-          currentAction = action;
-          activeOTP = Math.floor(1000 + Math.random() * 9000).toString();
-          document.getElementById('otpDisplay').textContent = activeOTP;
-          document.getElementById('otpInput').value = "";
-          document.getElementById('otpModal').style.display = 'flex';
-          document.getElementById('otpInput').focus();
+      window.clearGHCachedData = function() {
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith(CACHE_PREFIX)) localStorage.removeItem(key);
+        });
+        localStorage.removeItem(PRELOAD_FLAG);
+        showToast("Cached GitHub data cleared.");
       };
 
-      window.closeOTPModal = function() {
-          document.getElementById('otpModal').style.display = 'none';
+      window.refreshFromGitHub = async function() {
+        window.clearGHCachedData();
+        location.reload(); 
       };
 
-      document.getElementById('confirmActionBtn').onclick = function() {
-          if(document.getElementById('otpInput').value === activeOTP) {
-              executeAction(currentAction);
-              closeOTPModal();
-          } else {
-              showToast("Invalid OTP.");
-          }
-      };
-
-      function executeAction(action) {
-          if (action === 'full-reset') { localStorage.clear(); location.reload(); }
-          else if (action === 'resync-repo') {
-              Object.keys(localStorage).forEach(key => { if (key.startsWith(CACHE_PREFIX)) localStorage.removeItem(key); });
-              localStorage.removeItem(PRELOAD_FLAG);
-              location.reload();
-          } else if (action === 'reset-dashboard') {
-              progress = { solved:{}, revise:{}, lastActive:null, streak:0, dailyGoal:5, solvedToday:0, lastSolvedDate:null, recentFiles:[], history:{} };
-              saveProgress();
-              location.reload();
-          }
-      }
-
+      // --- UI HELPERS ---
       function showToast(msg) {
           const t = document.getElementById('toast');
-          t.textContent = msg; t.classList.add('show');
+          t.textContent = msg;
+          t.classList.add('show');
           setTimeout(() => t.classList.remove('show'), 3000);
       }
 
@@ -831,32 +677,36 @@
           localStorage.setItem('dsa_sidebar_collapsed', sidebar.classList.contains('collapsed'));
       };
 
-      window.toggleRecentFilesUI = function() {
-          const list = document.getElementById('recentFilesList');
-          const arrow = document.getElementById('recentsArrow');
-          const isActive = list.classList.toggle('active');
-          arrow.style.transform = isActive ? 'rotate(90deg)' : 'rotate(0deg)';
-      };
-
       window.exportToPDF = function() {
           if(!currentFilePath) return showToast("Select a file first");
           window.print();
       };
 
+      // --- PROGRESS LOGIC ---
       function loadProgress() {
         const saved = localStorage.getItem('dsa_vscode_v3');
         if (saved) {
-          try { progress = { ...progress, ...JSON.parse(saved) }; } catch (e) {}
+          try {
+            const p = JSON.parse(saved);
+            progress = { ...progress, ...p };
+          } catch (e) {}
         }
-        if (localStorage.getItem('dsa_sidebar_collapsed') === 'true') document.getElementById('sidebar').classList.add('collapsed');
-        if (progress.lastSolvedDate !== new Date().toDateString()) {
+        
+        // Handle Sidebar state
+        if (localStorage.getItem('dsa_sidebar_collapsed') === 'true') {
+            document.getElementById('sidebar').classList.add('collapsed');
+        }
+
+        // Daily Goal Reset Logic
+        const today = new Date().toDateString();
+        if (progress.lastSolvedDate !== today) {
             progress.solvedToday = 0;
-            progress.lastSolvedDate = new Date().toDateString();
+            progress.lastSolvedDate = today;
         }
+
         document.getElementById('dailyGoalInput').value = progress.dailyGoal;
         updateStreak();
         renderRecentFiles();
-        renderHeatmap();
       }
 
       function saveProgress() {
@@ -866,12 +716,20 @@
 
       function updateStreak() {
         if (!progress.lastActive) return;
-        const diff = (new Date().setHours(0,0,0,0) - new Date(progress.lastActive).setHours(0,0,0,0)) / 86400000;
+        const last = new Date(progress.lastActive); last.setHours(0,0,0,0);
+        const today = new Date(); today.setHours(0,0,0,0);
+        const diff = (today - last) / (1000 * 60 * 60 * 24);
         if (diff > 1) progress.streak = 0;
       }
 
+      window.updateDailyGoal = function(val) {
+          progress.dailyGoal = parseInt(val) || 5;
+          saveProgress();
+          showToast(`Daily target set to ${progress.dailyGoal}`);
+      };
+
       function updateRecentFiles(path, name) {
-          progress.recentFiles = (progress.recentFiles || []).filter(f => f.path !== path);
+          progress.recentFiles = progress.recentFiles.filter(f => f.path !== path);
           progress.recentFiles.unshift({ path, name });
           if (progress.recentFiles.length > 5) progress.recentFiles.pop();
           renderRecentFiles();
@@ -879,37 +737,25 @@
 
       function renderRecentFiles() {
           const list = document.getElementById('recentFilesList');
-          if (!progress.recentFiles?.length) {
-              list.innerHTML = '<p style="padding:5px 10px; font-size:0.7rem; opacity:0.5;">Empty history</p>';
+          if (!progress.recentFiles || progress.recentFiles.length === 0) {
+              list.innerHTML = '<p style="padding:5px 10px; font-size:0.75rem; color:var(--text-muted); opacity:0.5;">None yet</p>';
               return;
           }
           list.innerHTML = progress.recentFiles.map(f => `
-            <div class="file-item" onclick="loadCode('${f.path}')"><span>📄 ${f.name}</span></div>
+            <div class="file-item" onclick="loadCode('${f.path}')" title="${f.path}">
+                <span>📄 ${f.name}</span>
+            </div>
           `).join('');
       }
 
-      function renderHeatmap() {
-          const container = document.getElementById('heatmapContainer');
-          container.innerHTML = "";
-          const tempDate = new Date();
-          tempDate.setMonth(tempDate.getMonth() - 6);
-          while(tempDate.getDay() !== 1) tempDate.setDate(tempDate.getDate() - 1);
-          while(tempDate <= new Date()) {
-              const count = progress.history?.[tempDate.toDateString()] || 0;
-              let level = Math.min(4, Math.ceil(count / 2));
-              const cell = document.createElement('div');
-              cell.className = `heatmap-cell hm-level-${level}`;
-              cell.title = `${tempDate.toDateString()}: ${count}`;
-              container.appendChild(cell);
-              tempDate.setDate(tempDate.getDate() + 1);
-          }
-      }
-
+      // --- ACTIONS ---
       window.setTheme = function(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('dsa_theme', theme);
-        document.getElementById('themeDark').classList.toggle('active', theme === 'dark');
-        document.getElementById('themeLight').classList.toggle('active', theme === 'light');
+        const darkBtn = document.getElementById('themeDark');
+        const lightBtn = document.getElementById('themeLight');
+        if(darkBtn) darkBtn.classList.toggle('active', theme === 'dark');
+        if(lightBtn) lightBtn.classList.toggle('active', theme === 'light');
       };
 
       window.showView = function(view) {
@@ -922,63 +768,79 @@
 
       window.toggleSolved = function(path, e) {
         e.stopPropagation();
-        const today = new Date().toDateString();
         if (progress.solved[path]) {
             delete progress.solved[path];
             progress.solvedToday = Math.max(0, progress.solvedToday - 1);
-            if(progress.history) progress.history[today] = Math.max(0, (progress.history[today]||0) - 1);
         } else {
             progress.solved[path] = true;
             delete progress.revise[path];
             progress.solvedToday++;
-            if(!progress.history) progress.history = {};
-            progress.history[today] = (progress.history[today] || 0) + 1;
-            if (progress.lastActive !== today) {
-                const y = new Date(); y.setDate(y.getDate() - 1);
-                if (progress.lastActive === y.toDateString()) progress.streak++; else progress.streak = 1;
-                progress.lastActive = today;
+            
+            const todayStr = new Date().toDateString();
+            if (progress.lastActive !== todayStr) {
+                const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                if (progress.lastActive === yesterday.toDateString()) progress.streak++;
+                else progress.streak = 1;
+                progress.lastActive = todayStr;
             }
             showToast("Problem Solved!");
         }
-        saveProgress(); renderHeatmap();
+        saveProgress();
       };
 
       window.toggleRevise = function(path, e) {
         e.stopPropagation();
         if (progress.revise[path]) delete progress.revise[path];
-        else { progress.revise[path] = true; showToast("Added to Stars"); }
+        else {
+            progress.revise[path] = true;
+            showToast("Added to Stars");
+        }
         saveProgress();
       };
 
       window.copyCode = () => {
-        const lines = Array.from(document.querySelectorAll('#codeBlock .line-code'));
-        if(!lines.length) return;
-        const text = lines.map(el => el.innerText).join('\n');
-        const ta = document.createElement("textarea"); ta.value = text;
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-        document.body.removeChild(ta); showToast("Copied!");
+        const codeLines = Array.from(document.querySelectorAll('#codeBlock .line-code'));
+        if(!codeLines.length) return;
+        const text = codeLines.map(el => el.innerText).join('\n');
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast("Code Copied!");
       };
 
-      window.openOnGitHub = () => { if(currentFilePath) window.open(`https://github.com/${USERNAME}/${REPO}/blob/${BRANCH}/${currentFilePath}`, '_blank'); };
+      window.openOnGitHub = () => {
+        if (!currentFilePath) return;
+        window.open(`https://github.com/${USERNAME}/${REPO}/blob/${BRANCH}/${currentFilePath}`, '_blank');
+      };
 
-      window.startPreload = async function() {
-          const syncBtn = document.getElementById('mainSyncBtn');
-          const progressBox = document.getElementById('embeddedPreloadUI');
+      window.resetProgress = () => {
+        if (confirm("Reset ALL your progress data?")) {
+            progress = { solved: {}, revise: {}, lastActive: null, streak: 0, dailyGoal: 5, solvedToday: 0, recentFiles: [] };
+            localStorage.removeItem('dsa_vscode_v3');
+            location.reload();
+        }
+      };
+
+      // --- SYNC ---
+      async function startPreload() {
+          const overlay = document.getElementById('preloadOverlay');
           const status = document.getElementById('preloadStatus');
           const progressBar = document.getElementById('preloadProgress');
-          const fileCount = document.getElementById('preloadFileCount');
-
-          syncBtn.style.display = 'none';
-          progressBox.style.display = 'block';
+          const countDisplay = document.getElementById('preloadFileCount');
+          overlay.style.display = 'flex';
 
           try {
-              status.textContent = "Connecting to GitHub...";
-              const rootRes = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`);
+              status.textContent = "Fetching directory structure...";
+              const rootUrl = `https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`;
+              const rootRes = await fetch(rootUrl);
               const rootData = await rootRes.json();
               const topics = rootData.filter(d => d.type === 'dir');
               setCache('topics', topics);
               allTopics = topics;
-              
+
               let allFilePaths = [];
               for (const topic of topics) {
                   const topicRes = await fetch(topic.url);
@@ -991,114 +853,176 @@
               const total = allFilePaths.length;
               for (let i = 0; i < total; i++) {
                   const path = allFilePaths[i];
-                  status.textContent = `Syncing: ${path.split('/').pop()}`;
+                  status.textContent = `Syncing: ${path.split('/').pop()}...`;
                   progressBar.style.width = Math.round(((i + 1) / total) * 100) + '%';
-                  fileCount.textContent = `${i + 1} / ${total}`;
+                  countDisplay.textContent = `${i + 1} / ${total}`;
 
-                  const codeRes = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`);
+                  const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+                  const codeRes = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${encodedPath}`);
                   if (codeRes.ok) setCache(`code_${path}`, await codeRes.text());
               }
-              
+
               localStorage.setItem(PRELOAD_FLAG, "true");
-              progressBox.style.display = 'none';
+              overlay.style.display = 'none';
               showToast("Sync Successful!");
               renderTopics(allTopics);
               updateAllUI();
-          } catch (err) { 
-              progressBox.style.display = 'none'; 
-              syncBtn.style.display = 'flex';
-              showToast("Sync failed."); 
+          } catch (err) {
+              overlay.style.display = 'none';
+              showToast("Sync incomplete. Check internet.");
           }
-      };
+      }
 
       async function fetchTopics() {
         const isDone = localStorage.getItem(PRELOAD_FLAG);
         const cached = getCache('topics');
-        if (isDone && cached) {
-            allTopics = cached;
-            renderTopics(allTopics);
-            // Auto hide empty state if data is already cached
-            document.getElementById('emptyStateView').style.display = 'none';
-            document.getElementById('codeBlock').style.display = 'flex';
-        }
+        if (!isDone || !cached) { await startPreload(); return; }
+        allTopics = cached;
+        renderTopics(allTopics);
       }
 
       function renderTopics(topics) {
-        document.getElementById('topicsList').innerHTML = topics.map(t => `
+        let html = '';
+        topics.forEach(t => {
+          html += `
             <div class="topic-item">
-              <div class="topic-header" onclick="toggleFolder('${t.name}', '${t.url}', this)">📁 ${t.name}<span class="arrow">▶</span></div>
+              <div class="topic-header" onclick="toggleFolder('${t.name}', '${t.url}', this)">
+                <span class="icon">📁</span> ${t.name}
+                <span class="arrow">▶</span>
+              </div>
               <div class="files-container" id="files-${t.name.replace(/\s+/g, '-')}"></div>
-            </div>`).join('');
+            </div>`;
+        });
+        document.getElementById('topicsList').innerHTML = html;
       }
 
       window.toggleFolder = async function(name, apiUrl, el) {
         const container = el.nextElementSibling;
-        if (el.classList.toggle('open')) {
-          container.style.display = 'block';
-          let cpps = getCache(`files_${name}`);
-          container.innerHTML = cpps.map(f => `
-            <div class="file-item ${progress.solved[f.path] ? 'solved' : ''} ${progress.revise[f.path] ? 'revise' : ''}" data-path="${f.path}">
-              <span onclick="loadCode('${f.path}')">📄 ${f.name}</span>
-              <div class="file-status">
-                <button class="status-btn solved-btn ${progress.solved[f.path] ? 'solved-active' : ''}" onclick="toggleSolved('${f.path}', event)">${progress.solved[f.path] ? '✅' : '⬜'}</button>
-                <button class="status-btn revise-btn ${progress.revise[f.path] ? 'revise-active' : ''}" onclick="toggleRevise('${f.path}', event)">${progress.revise[f.path] ? '⭐' : '☆'}</button>
-              </div>
-            </div>`).join('');
-        } else container.style.display = 'none';
+        const isOpen = el.classList.contains('open');
+        if (isOpen) { el.classList.remove('open'); container.style.display = 'none'; return; }
+        el.classList.add('open');
+        container.style.display = 'block';
+
+        let cpps = getCache(`files_${name}`);
+        if (!cpps) {
+          container.innerHTML = `<div style="padding:4px 8px; font-size:0.7rem;">Loading...</div>`;
+          const res = await fetch(apiUrl);
+          cpps = (await res.json()).filter(f => f.name.endsWith('.cpp'));
+          setCache(`files_${name}`, cpps);
+        }
+
+        container.innerHTML = cpps.map(f => `
+          <div class="file-item ${progress.solved[f.path] ? 'solved' : ''} ${progress.revise[f.path] ? 'revise' : ''}" data-path="${f.path}">
+            <span onclick="loadCode('${f.path}')">📄 ${f.name}</span>
+            <div class="file-status">
+              <button class="status-btn solved-btn ${progress.solved[f.path] ? 'solved-active' : ''}" onclick="toggleSolved('${f.path}', event)">${progress.solved[f.path] ? '✅' : '⬜'}</button>
+              <button class="status-btn revise-btn ${progress.revise[f.path] ? 'revise-active' : ''}" onclick="toggleRevise('${f.path}', event)">${progress.revise[f.path] ? '⭐' : '☆'}</button>
+            </div>
+          </div>
+        `).join('');
       };
 
       window.loadCode = async function(path) {
         currentFilePath = path;
+        const fileName = path.split('/').pop();
         document.getElementById('currentFilePath').textContent = path;
-        updateRecentFiles(path, path.split('/').pop());
-        document.getElementById('emptyStateView').style.display = 'none';
-        const cb = document.getElementById('codeBlock');
-        cb.style.display = 'flex';
+        updateRecentFiles(path, fileName);
+        
+        const codeBlock = document.getElementById('codeBlock');
         let text = getCache(`code_${path}`);
-        if(!text) {
-          cb.innerHTML = '<div class="code-line"><span class="line-code">Fetching...</span></div>';
-          const res = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`);
-          text = await res.text(); setCache(`code_${path}`, text);
+
+        if (!text) {
+          codeBlock.innerHTML = `<div class="code-line"><span class="line-number-gutter">...</span><span class="line-code">Fetching...</span></div>`;
+          const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+          const res = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${encodedPath}`);
+          text = await res.text();
+          setCache(`code_${path}`, text);
         }
-        cb.innerHTML = text.split('\n').map((l, i) => `<div class="code-line"><span class="line-number-gutter">${i+1}</span><span class="line-code">${Prism.highlight(l, Prism.languages.cpp, 'cpp')}</span></div>`).join('');
-        document.getElementById('statusInfo').textContent = "Lines: " + text.split('\n').length;
+
+        const lines = text.split('\n');
+        codeBlock.innerHTML = lines.map((line, idx) => `
+          <div class="code-line">
+            <span class="line-number-gutter">${idx + 1}</span>
+            <span class="line-code">${Prism.highlight(line, Prism.languages.cpp, 'cpp')}</span>
+          </div>
+        `).join('');
+        
+        document.getElementById('statusInfo').textContent = "Lines: " + lines.length;
         showView('code');
       };
 
+      // --- ANALYTICS ---
       function updateAllUI() {
         const solvedCount = Object.keys(progress.solved).length;
-        let total = 0, topicsData = {};
+        const reviseCount = Object.keys(progress.revise).length;
+        
+        let grandTotal = 0;
+        const topicsData = {};
         allTopics.forEach(t => {
             const files = getCache(`files_${t.name}`);
-            if(files) { total += files.length; topicsData[t.name] = { total: files.length, solved: files.filter(f => progress.solved[f.path]).length }; }
+            if(files) {
+                grandTotal += files.length;
+                topicsData[t.name] = { total: files.length, solved: 0 };
+                files.forEach(f => { if(progress.solved[f.path]) topicsData[t.name].solved++; });
+            }
         });
-        document.getElementById('dashTotal').textContent = total;
+
+        document.getElementById('dashTotal').textContent = grandTotal;
         document.getElementById('dashSolved').textContent = solvedCount;
         document.getElementById('dashStreak').textContent = progress.streak;
         document.getElementById('solvedToday').textContent = progress.solvedToday;
-        document.getElementById('badge-10').classList.toggle('unlocked', solvedCount >= 10);
-        document.getElementById('badge-streak').classList.toggle('unlocked', progress.streak >= 7);
-        document.getElementById('badge-king').classList.toggle('unlocked', progress.solvedToday >= progress.dailyGoal);
+
+        // Daily Goal Progress
         const goalPct = Math.min(100, Math.round((progress.solvedToday / progress.dailyGoal) * 100));
         document.getElementById('goalProgressFill').style.width = goalPct + '%';
-        document.getElementById('goalSummary').textContent = `${progress.solvedToday} of ${progress.dailyGoal} solved today.`;
-        if (dashboardChart) { dashboardChart.data.datasets[0].data = [solvedCount, Math.max(0, total - solvedCount)]; dashboardChart.update(); }
-        document.getElementById('topicProgressListDashboard').innerHTML = Object.entries(topicsData).map(([n, d]) => `
-          <div style="margin-bottom:12px;"><div style="display:flex; justify-content:space-between; font-size:0.7rem;"><span>${n}</span><span>${d.solved}/${d.total}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${(d.solved/d.total)*100}%"></div></div></div>`).join('');
-        document.getElementById('revisionChips').innerHTML = Object.keys(progress.revise).map(p => `<div class="revision-chip" onclick="loadCode('${p}')" style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:4px 10px; border-radius:15px; font-size:0.7rem; cursor:pointer; color:var(--warning)">⭐ ${p.split('/').pop()}</div>`).join('') || '<p style="font-size:0.8rem; color:var(--text-muted);">Empty</p>';
+        document.getElementById('goalSummary').textContent = `${progress.solvedToday} of ${progress.dailyGoal} questions solved today.`;
+
+        if (dashboardChart) {
+          dashboardChart.data.datasets[0].data = [solvedCount, Math.max(0, grandTotal - solvedCount)];
+          dashboardChart.update();
+        }
+
+        document.getElementById('topicProgressListDashboard').innerHTML = Object.entries(topicsData).map(([name, data]) => `
+          <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px;">
+                <span>${name}</span>
+                <span style="color:var(--text-muted)">${data.solved}/${data.total} (${Math.round((data.solved/data.total)*100)}%)</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${(data.solved/data.total)*100}%"></div></div>
+          </div>
+        `).join('');
+
+        document.getElementById('revisionChips').innerHTML = Object.keys(progress.revise).map(path => `
+          <div class="revision-chip" onclick="loadCode('${path}')" style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:4px 10px; border-radius:15px; font-size:0.7rem; cursor:pointer; color:var(--warning)">⭐ ${path.split('/').pop()}</div>
+        `).join('') || '<p style="font-size:0.8rem; color:var(--text-muted);">None starred yet.</p>';
       }
 
       function initChart() {
         const ctx = document.getElementById('dashboardChart').getContext('2d');
-        dashboardChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Solved', 'Remaining'], datasets: [{ data: [0, 1], backgroundColor: ['#6a9955', '#3e3e42'], borderWidth: 0 }] }, options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        dashboardChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Solved', 'Remaining'],
+            datasets: [{ data: [0, 1], backgroundColor: ['#6a9955', '#3e3e42'], borderWidth: 0 }]
+          },
+          options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
       }
 
+      // Filter
       document.getElementById('topicSearch').addEventListener('input', (e) => {
           const val = e.target.value.toLowerCase();
-          document.querySelectorAll('.topic-item').forEach(item => item.style.display = item.innerText.toLowerCase().includes(val) ? 'block' : 'none');
+          document.querySelectorAll('.topic-item').forEach(item => {
+              item.style.display = item.innerText.toLowerCase().includes(val) ? 'block' : 'none';
+          });
       });
 
-      loadProgress(); setTheme(localStorage.getItem('dsa_theme') || 'dark'); fetchTopics(); initChart();
+      // --- RUN ---
+      loadProgress();
+      setTheme(localStorage.getItem('dsa_theme') || 'dark');
+      fetchTopics(); 
+      initChart();
+
     })();
   </script>
 </body>

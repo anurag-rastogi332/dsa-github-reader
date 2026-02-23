@@ -450,32 +450,6 @@
         gap: 10px;
     }
 
-    /* Embedded Preload UI (Now inside empty state) */
-    #embeddedPreloadUI {
-        display: none;
-        background: var(--bg-secondary);
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        width: 350px;
-        text-align: center;
-        margin-top: 10px;
-    }
-    .preload-progress-outer {
-        width: 100%;
-        height: 6px;
-        background: var(--bg-primary);
-        border-radius: 3px;
-        margin: 15px 0;
-        overflow: hidden;
-    }
-    .preload-progress-inner {
-        height: 100%;
-        background: var(--accent);
-        width: 0%;
-        transition: width 0.1s;
-    }
-
     pre.code-block {
       margin: 0 !important;
       padding: 1rem 0 !important;
@@ -485,7 +459,7 @@
       font-family: 'Fira Code', monospace;
       display: flex;
       flex-direction: column;
-      display: none; 
+      display: none; /* Hidden until file loaded */
     }
     .code-line { display: flex; width: 100%; }
     .line-number-gutter {
@@ -599,6 +573,17 @@
       </div>
   </div>
 
+  <div id="preloadOverlay">
+      <div class="preload-box">
+          <h3 style="margin-bottom:10px;">Syncing Repository</h3>
+          <p id="preloadStatus" style="font-size:0.85rem; color:var(--text-muted);">Initializing setup...</p>
+          <div class="preload-progress-outer">
+              <div id="preloadProgress" class="preload-progress-inner"></div>
+          </div>
+          <p id="preloadFileCount" style="font-size:0.75rem; font-family:'Fira Code';">0 / 0</p>
+      </div>
+  </div>
+
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h2>Explorer</h2>
@@ -644,19 +629,9 @@
             <div id="emptyStateView">
                 <h3>Ready to solve some problems?</h3>
                 <p>Website is open. Sabse pehle GitHub se questions fetch karne honge taaki aap browse kar sakein.</p>
-                
-                <button id="mainSyncBtn" class="sync-btn" onclick="startPreload()">
+                <button class="sync-btn" onclick="startPreload()">
                     <span>🔁</span> Connect & Sync Repository
                 </button>
-
-                <!-- Localized Progress Box -->
-                <div id="embeddedPreloadUI">
-                    <p id="preloadStatus" style="font-size:0.8rem; font-weight:500;">Initializing...</p>
-                    <div class="preload-progress-outer">
-                        <div id="preloadProgress" class="preload-progress-inner"></div>
-                    </div>
-                    <p id="preloadFileCount" style="font-size:0.7rem; color:var(--text-muted); font-family:'Fira Code';">0 / 0</p>
-                </div>
             </div>
             <!-- Code Block -->
             <pre class="code-block" id="codeBlock"></pre>
@@ -962,15 +937,10 @@
       window.openOnGitHub = () => { if(currentFilePath) window.open(`https://github.com/${USERNAME}/${REPO}/blob/${BRANCH}/${currentFilePath}`, '_blank'); };
 
       window.startPreload = async function() {
-          const syncBtn = document.getElementById('mainSyncBtn');
-          const progressBox = document.getElementById('embeddedPreloadUI');
+          const overlay = document.getElementById('preloadOverlay');
           const status = document.getElementById('preloadStatus');
           const progressBar = document.getElementById('preloadProgress');
-          const fileCount = document.getElementById('preloadFileCount');
-
-          syncBtn.style.display = 'none';
-          progressBox.style.display = 'block';
-
+          overlay.style.display = 'flex';
           try {
               status.textContent = "Connecting to GitHub...";
               const rootRes = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents?ref=${BRANCH}`);
@@ -978,7 +948,6 @@
               const topics = rootData.filter(d => d.type === 'dir');
               setCache('topics', topics);
               allTopics = topics;
-              
               let allFilePaths = [];
               for (const topic of topics) {
                   const topicRes = await fetch(topic.url);
@@ -987,28 +956,20 @@
                   setCache(`files_${topic.name}`, cpps);
                   cpps.forEach(f => allFilePaths.push(f.path));
               }
-
               const total = allFilePaths.length;
               for (let i = 0; i < total; i++) {
                   const path = allFilePaths[i];
                   status.textContent = `Syncing: ${path.split('/').pop()}`;
                   progressBar.style.width = Math.round(((i + 1) / total) * 100) + '%';
-                  fileCount.textContent = `${i + 1} / ${total}`;
-
                   const codeRes = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`);
                   if (codeRes.ok) setCache(`code_${path}`, await codeRes.text());
               }
-              
               localStorage.setItem(PRELOAD_FLAG, "true");
-              progressBox.style.display = 'none';
+              overlay.style.display = 'none';
               showToast("Sync Successful!");
               renderTopics(allTopics);
               updateAllUI();
-          } catch (err) { 
-              progressBox.style.display = 'none'; 
-              syncBtn.style.display = 'flex';
-              showToast("Sync failed."); 
-          }
+          } catch (err) { overlay.style.display = 'none'; showToast("Sync failed."); }
       };
 
       async function fetchTopics() {
@@ -1017,9 +978,6 @@
         if (isDone && cached) {
             allTopics = cached;
             renderTopics(allTopics);
-            // Auto hide empty state if data is already cached
-            document.getElementById('emptyStateView').style.display = 'none';
-            document.getElementById('codeBlock').style.display = 'flex';
         }
       }
 
@@ -1053,7 +1011,7 @@
         updateRecentFiles(path, path.split('/').pop());
         document.getElementById('emptyStateView').style.display = 'none';
         const cb = document.getElementById('codeBlock');
-        cb.style.display = 'flex';
+        cb.style.display = 'block';
         let text = getCache(`code_${path}`);
         if(!text) {
           cb.innerHTML = '<div class="code-line"><span class="line-code">Fetching...</span></div>';
