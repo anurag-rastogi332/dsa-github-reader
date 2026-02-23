@@ -84,8 +84,8 @@
       border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      z-index: 100;
-      transition: width 0.2s ease-in-out, transform 0.2s ease-in-out;
+      z-index: 10;
+      transition: width 0.2s ease-in-out;
     }
 
     .sidebar.collapsed {
@@ -243,7 +243,6 @@
       display: flex;
       flex-direction: column;
       min-width: 0;
-      position: relative;
     }
 
     .header {
@@ -255,7 +254,6 @@
       justify-content: space-between;
       align-items: center;
       font-size: 0.8rem;
-      z-index: 50;
     }
 
     .header-left { display: flex; align-items: center; height: 100%; }
@@ -575,43 +573,6 @@
       justify-content: space-between;
     }
 
-    /* === RESPONSIVE OVERRIDES === */
-    @media (max-width: 900px) {
-      :root { --sidebar-width: 260px; }
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .goal-panel { flex-direction: column; align-items: flex-start; gap: 15px; }
-      .goal-panel > div:last-child { width: 100%; justify-content: space-between; }
-      .stats-cards { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 600px) {
-      .sidebar {
-        position: absolute;
-        height: calc(100% - 25px);
-        width: 80%;
-        max-width: 300px;
-        box-shadow: 10px 0 15px rgba(0, 0, 0, 0.3);
-      }
-      .sidebar.collapsed { width: 0; transform: translateX(-100%); }
-      .sidebar:not(.collapsed) { transform: translateX(0); }
-      .header { height: auto; min-height: 35px; flex-direction: column; padding: 8px; gap: 8px; }
-      .header-left { width: 100%; justify-content: space-between; }
-      .nav-links { flex: 1; justify-content: center; }
-      .nav-link { padding: 0 10px; border-right: none; }
-      .button-group { width: 100%; justify-content: center; border-top: 1px solid var(--border-color); padding-top: 8px; }
-      .file-meta { flex-direction: column; align-items: flex-start; gap: 5px; padding: 8px 1rem; }
-      .line-number-gutter { width: 2.5rem; padding-right: 0.5rem; margin-right: 0.5rem; }
-      .dashboard-scroll { padding: 1rem; }
-      .stat-card .value { font-size: 1.4rem; }
-      .heatmap-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .modal-box { width: 90%; margin: 20px; padding: 1.5rem; }
-      .theme-btn { flex: none; width: 48%; }
-    }
-
-    /* Fix for horizontal scrolling on code without breaking layout */
-    .code-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .line-code { white-space: pre; display: inline-block; min-width: 100%; }
-
     @media print {
         body * { visibility: hidden; }
         #codeView, #codeView * { visibility: visible; }
@@ -929,7 +890,6 @@
 
       function renderHeatmap() {
           const container = document.getElementById('heatmapContainer');
-          if(!container) return;
           container.innerHTML = "";
           const tempDate = new Date();
           tempDate.setMonth(tempDate.getMonth() - 6);
@@ -1057,6 +1017,7 @@
         if (isDone && cached) {
             allTopics = cached;
             renderTopics(allTopics);
+            // Auto hide empty state if data is already cached
             document.getElementById('emptyStateView').style.display = 'none';
             document.getElementById('codeBlock').style.display = 'flex';
         }
@@ -1075,16 +1036,14 @@
         if (el.classList.toggle('open')) {
           container.style.display = 'block';
           let cpps = getCache(`files_${name}`);
-          if(cpps) {
-            container.innerHTML = cpps.map(f => `
-              <div class="file-item ${progress.solved[f.path] ? 'solved' : ''} ${progress.revise[f.path] ? 'revise' : ''}" data-path="${f.path}">
-                <span onclick="loadCode('${f.path}')">📄 ${f.name}</span>
-                <div class="file-status">
-                  <button class="status-btn solved-btn ${progress.solved[f.path] ? 'solved-active' : ''}" onclick="toggleSolved('${f.path}', event)">${progress.solved[f.path] ? '✅' : '⬜'}</button>
-                  <button class="status-btn revise-btn ${progress.revise[f.path] ? 'revise-active' : ''}" onclick="toggleRevise('${f.path}', event)">${progress.revise[f.path] ? '⭐' : '☆'}</button>
-                </div>
-              </div>`).join('');
-          }
+          container.innerHTML = cpps.map(f => `
+            <div class="file-item ${progress.solved[f.path] ? 'solved' : ''} ${progress.revise[f.path] ? 'revise' : ''}" data-path="${f.path}">
+              <span onclick="loadCode('${f.path}')">📄 ${f.name}</span>
+              <div class="file-status">
+                <button class="status-btn solved-btn ${progress.solved[f.path] ? 'solved-active' : ''}" onclick="toggleSolved('${f.path}', event)">${progress.solved[f.path] ? '✅' : '⬜'}</button>
+                <button class="status-btn revise-btn ${progress.revise[f.path] ? 'revise-active' : ''}" onclick="toggleRevise('${f.path}', event)">${progress.revise[f.path] ? '⭐' : '☆'}</button>
+              </div>
+            </div>`).join('');
         } else container.style.display = 'none';
       };
 
@@ -1098,16 +1057,12 @@
         let text = getCache(`code_${path}`);
         if(!text) {
           cb.innerHTML = '<div class="code-line"><span class="line-code">Fetching...</span></div>';
-          try {
-            const res = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`);
-            text = await res.text(); setCache(`code_${path}`, text);
-          } catch(e) { text = "// Error loading file from GitHub."; }
+          const res = await fetch(`https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`);
+          text = await res.text(); setCache(`code_${path}`, text);
         }
         cb.innerHTML = text.split('\n').map((l, i) => `<div class="code-line"><span class="line-number-gutter">${i+1}</span><span class="line-code">${Prism.highlight(l, Prism.languages.cpp, 'cpp')}</span></div>`).join('');
         document.getElementById('statusInfo').textContent = "Lines: " + text.split('\n').length;
         showView('code');
-        // Hide sidebar on mobile after clicking a file
-        if (window.innerWidth <= 600) toggleSidebar();
       };
 
       function updateAllUI() {
@@ -1138,26 +1093,12 @@
         dashboardChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Solved', 'Remaining'], datasets: [{ data: [0, 1], backgroundColor: ['#6a9955', '#3e3e42'], borderWidth: 0 }] }, options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
       }
 
-      window.updateDailyGoal = function(val) {
-        progress.dailyGoal = parseInt(val) || 5;
-        saveProgress();
-      };
-
       document.getElementById('topicSearch').addEventListener('input', (e) => {
           const val = e.target.value.toLowerCase();
           document.querySelectorAll('.topic-item').forEach(item => item.style.display = item.innerText.toLowerCase().includes(val) ? 'block' : 'none');
       });
 
-      window.onload = () => {
-        loadProgress(); 
-        setTheme(localStorage.getItem('dsa_theme') || 'dark'); 
-        fetchTopics(); 
-        initChart();
-        // Collapse sidebar by default on small mobile
-        if (window.innerWidth <= 600) {
-            document.getElementById('sidebar').classList.add('collapsed');
-        }
-      };
+      loadProgress(); setTheme(localStorage.getItem('dsa_theme') || 'dark'); fetchTopics(); initChart();
     })();
   </script>
 </body>
